@@ -70,6 +70,8 @@ export default function App() {
   const [navScrolled, setNavScrolled] = useState(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
     const onScroll = () => setNavScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
 
