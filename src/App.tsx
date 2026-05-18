@@ -69,7 +69,12 @@ export default function App() {
   const { msg, show, notify } = useNotif();
   const [navScrolled, setNavScrolled] = useState(false);
 
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
     window.scrollTo({ top: 0, behavior: 'instant' });
 
     const onScroll = () => setNavScrolled(window.scrollY > 60);
