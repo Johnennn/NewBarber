@@ -187,7 +187,7 @@ export default function App() {
       <Marquee />
 
       {/* SERVICES */}
-      <ServicesSection notify={notify} scrollTo={scrollTo} />
+      <ServicesSection scrollTo={scrollTo} />
 
       {/* TEAM */}
       <TeamSection scrollTo={scrollTo} />
@@ -231,8 +231,7 @@ function Marquee() {
 }
 
 // ─── SERVICES ────────────────────────────────────────────────────────
-function ServicesSection({ notify, scrollTo }: { notify:(m:string)=>void; scrollTo:(id:string)=>void }) {
-  const selectAndScroll = (id: number) => {
+function ServicesSection({ scrollTo }: { scrollTo:(id:string)=>void }) {  const selectAndScroll = (id: number) => {
     scrollTo('booking');
     // Esperar a que el scroll termine usando requestAnimationFrame + delay seguro
     const tryClick = (attempts = 0) => {
