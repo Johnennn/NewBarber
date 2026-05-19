@@ -68,12 +68,35 @@ function useNotif() {
 // ═══════════════════════════════════════════════════════════════════════
 // APP
 // ═══════════════════════════════════════════════════════════════════════
+
+// Componente exclusivo para la pestaña admin — sin hooks condicionales
+function AdminTabPage() {
+  const { msg, show, notify } = useNotif();
+  return (
+    <>
+      <div id="notif" className={show ? 'show' : ''}>{msg}</div>
+      <AdminPanel
+        notify={notify}
+        onLogout={() => {
+          localStorage.removeItem('adminAuth');
+          notify('Sesión cerrada');
+          setTimeout(() => window.close(), 1200);
+        }}
+      />
+    </>
+  );
+}
+
 export default function App() {
   const { msg, show, notify } = useNotif();
   const [navScrolled,    setNavScrolled]    = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isAdminTab = new URLSearchParams(window.location.search).get('admin') === '1';
+  const isAuthed   = localStorage.getItem('adminAuth') === 'true';
+
   useEffect(() => {
+    if (isAdminTab) return; // no hace scroll ni observers en la pestaña admin
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     const onScroll = () => setNavScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
@@ -88,7 +111,7 @@ export default function App() {
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-    document.querySelectorAll('.service-card,.team-card,.kpi,.admin-card,.schedule-day').forEach(el => {
+    document.querySelectorAll('.team-card,.kpi,.admin-card,.schedule-day').forEach(el => {
       const h = el as HTMLElement;
       h.style.opacity = '0';
       h.style.transform = 'translateY(20px)';
@@ -97,7 +120,16 @@ export default function App() {
     });
 
     return () => { window.removeEventListener('scroll', onScroll); obs.disconnect(); };
-  }, []);
+  }, [isAdminTab]);
+
+  // Pestaña admin — todos los hooks ya fueron llamados arriba
+  if (isAdminTab) {
+    if (!isAuthed) {
+      window.location.href = window.location.pathname;
+      return null;
+    }
+    return <AdminTabPage />;
+  }
 
   // NAVEGACIÓN SIMPLIFICADA - Sin galería
   const navLinks: [string, string][] = [
@@ -228,7 +260,7 @@ export default function App() {
       <BookingSection notify={notify} />
       <ScheduleSection />
       <LocationSection />
-      <AdminSection notify={notify} />
+      <AdminSection />
       <FooterSection />
     </>
   );
@@ -659,39 +691,53 @@ function LocationSection() {
 // ═══════════════════════════════════════════════════════════════════════
 // ADMIN SECTION
 // ═══════════════════════════════════════════════════════════════════════
-function AdminSection({ notify }: { notify:(m:string)=>void }) {
-  const [authenticated, setAuthenticated] = useState(false);
+function AdminSection() {
   return (
     <section id="admin" style={{ padding:0, maxWidth:'none', margin:0, width:'100%' }}>
-      {authenticated ? (
-        <AdminPanel
-          notify={notify}
-          onLogout={() => { setAuthenticated(false); notify('Sesión cerrada correctamente'); }}
-        />
-      ) : (
-        <AdminLogin
-          onLogin={() => { setAuthenticated(true); notify('✓ Sesión iniciada correctamente'); }}
-        />
-      )}
+      <AdminLogin />
     </section>
   );
 }
 
-function AdminLogin({ onLogin }: { onLogin:()=>void }) {
+function AdminLogin() {
   const [pass, setPass] = useState('');
+  const [error, setError] = useState(false);
+
   const handleLogin = () => {
     if (pass === ADMIN_PASSWORD) {
-      onLogin();
+      setError(false);
+      // Guarda sesión en localStorage y abre nueva pestaña
+      localStorage.setItem('adminAuth', 'true');
+      window.open(window.location.pathname + '?admin=1', '_blank');
     } else {
-      alert('Contraseña incorrecta');
+      setError(true);
+      setPass('');
     }
   };
+
   return (
     <div className="admin-login">
       <div className="admin-login-wrap">
-        <h2>NOIR & CO — Admin</h2>
-        <input type="password" placeholder="Contraseña" value={pass} onChange={e => setPass(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()}/>
-        <button onClick={handleLogin}>Ingresar</button>
+        <div className="admin-login-logo">
+          <div className="nav-logo-mark" style={{ width:48, height:48, fontSize:'1.2rem' }}>N</div>
+        </div>
+        <h2>NOIR &amp; CO</h2>
+        <p className="admin-login-sub">Panel de Administración</p>
+        <div className="admin-login-field">
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={pass}
+            onChange={e => { setPass(e.target.value); setError(false); }}
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            className={error ? 'error' : ''}
+          />
+          {error && <span className="admin-login-error">Contraseña incorrecta</span>}
+        </div>
+        <button onClick={handleLogin}>
+          Acceder al panel →
+        </button>
+        <p className="admin-login-hint">Se abrirá en una nueva pestaña</p>
       </div>
     </div>
   );
@@ -701,6 +747,27 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
   const [appointments, setAppointments] = useState(JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT)));
   const [emailConfigs, setEmailConfigs] = useState(EMAIL_CONFIGS_DEFAULT);
   const [searchFilter, setSearchFilter] = useState('');
+  const [refreshing,   setRefreshing]   = useState(false);
+  const [lastRefresh,  setLastRefresh]  = useState(new Date());
+
+  const loadAppointments = () => {
+    return JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT));
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setAppointments(loadAppointments());
+      setLastRefresh(new Date());
+      setRefreshing(false);
+      notify('✓ Datos actualizados');
+    }, 600);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth');
+    onLogout();
+  };
 
   const filtered = appointments.filter((a:any) => a.client.toLowerCase().includes(searchFilter.toLowerCase()) || a.email.includes(searchFilter));
   const updateStatus = (id: number, status: string) => { const upd = appointments.map((a:any) => a.id === id ? { ...a, status } : a); setAppointments(upd); localStorage.setItem('appointments', JSON.stringify(upd)); };
@@ -712,11 +779,25 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
   const barVals = [5, 7, 4, 6, 8, 5];
   const barMax = Math.max(...barVals);
 
+  const timeStr = lastRefresh.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
   return (
     <div className="admin-panel">
       <div className="admin-header">
-        <h2>Dashboard</h2>
-        <button onClick={onLogout} className="logout-btn">Salir</button>
+        <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
+          <div className="nav-logo-mark">N</div>
+          <div>
+            <h2>Dashboard</h2>
+            <span className="admin-last-refresh">Actualizado a las {timeStr}</span>
+          </div>
+        </div>
+        <div style={{ display:'flex', gap:'0.75rem', alignItems:'center' }}>
+          <button onClick={handleRefresh} className={`refresh-btn ${refreshing ? 'spinning' : ''}`} title="Refrescar datos">
+            <span className="refresh-icon">↻</span>
+            {refreshing ? 'Actualizando...' : 'Refrescar'}
+          </button>
+          <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
+        </div>
       </div>
 
       <div className="admin-kpis">
