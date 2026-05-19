@@ -494,12 +494,27 @@ type BookingState = {
   time:    string | null;
 };
 
+type ConfirmedBooking = {
+  id: number;
+  client: string;
+  service: string;
+  serviceIcon: string;
+  serviceDuration: string;
+  pro: string;
+  proImg: string;
+  date: string;
+  time: string;
+  total: number;
+  email: string;
+};
+
 function BookingSection({ notify }: { notify:(m:string)=>void }) {
-  const [step,     setStep]     = useState(1);
-  const [booking,  setBooking]  = useState<BookingState>({ service:null, pro:null, date:null, time:null });
-  const [fname,    setFname]    = useState('');
-  const [femail,   setFemail]   = useState('');
-  const [fphone,   setFphone]   = useState('');
+  const [step,      setStep]      = useState(1);
+  const [booking,   setBooking]   = useState<BookingState>({ service:null, pro:null, date:null, time:null });
+  const [fname,     setFname]     = useState('');
+  const [femail,    setFemail]    = useState('');
+  const [fphone,    setFphone]    = useState('');
+  const [confirmed, setConfirmed] = useState<ConfirmedBooking | null>(null);
 
   const stepLabels = ['Servicio','Profesional','Fecha','Datos'];
 
@@ -514,12 +529,130 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     if (!fname.trim() || !femail.includes('@') || fphone.length < 7) {
       notify('Completa todos los campos correctamente'); return;
     }
-    const a = { id:99, client:fname, service:booking.service?.name ?? '', pro:booking.pro?.name ?? '', date:booking.date?.toLocaleDateString('es-CL') ?? '', time:booking.time ?? '', status:'pendiente' as const, total:booking.service?.price ?? 0, email:femail };
+    const newId = Date.now();
+    const appt = {
+      id: newId,
+      client: fname,
+      service: booking.service?.name ?? '',
+      pro: booking.pro?.name ?? '',
+      date: booking.date?.toLocaleDateString('es-CL') ?? '',
+      time: booking.time ?? '',
+      status: 'pendiente' as const,
+      total: booking.service?.price ?? 0,
+      email: femail,
+    };
     const saved = JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT));
-    saved.push(a);
+    saved.push(appt);
     localStorage.setItem('appointments', JSON.stringify(saved));
-    notify('✓ Reserva confirmada'); setStep(1); setBooking({ service:null, pro:null, date:null, time:null }); setFname(''); setFemail(''); setFphone('');
+
+    setConfirmed({
+      id: newId,
+      client: fname,
+      service: booking.service?.name ?? '',
+      serviceIcon: booking.service?.icon ?? '',
+      serviceDuration: booking.service?.duration ?? '',
+      pro: booking.pro?.name ?? '',
+      proImg: booking.pro?.img ?? '',
+      date: booking.date?.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) ?? '',
+      time: booking.time ?? '',
+      total: booking.service?.price ?? 0,
+      email: femail,
+    });
   };
+
+  const cancelBooking = () => {
+    if (!confirmed) return;
+    const saved: any[] = JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT));
+    const updated = saved.map(a => a.id === confirmed.id ? { ...a, status: 'cancelado' } : a);
+    localStorage.setItem('appointments', JSON.stringify(updated));
+    notify('Reserva cancelada');
+    setConfirmed(null);
+    setStep(1);
+    setBooking({ service:null, pro:null, date:null, time:null });
+    setFname(''); setFemail(''); setFphone('');
+  };
+
+  const newBooking = () => {
+    setConfirmed(null);
+    setStep(1);
+    setBooking({ service:null, pro:null, date:null, time:null });
+    setFname(''); setFemail(''); setFphone('');
+  };
+
+  // ── Pantalla de confirmación ──
+  if (confirmed) {
+    return (
+      <section id="booking">
+        <div className="booking-container">
+          <div className="booking-confirmed">
+            <div className="confirmed-check">✓</div>
+            <h2 className="confirmed-title">¡Reserva confirmada!</h2>
+            <p className="confirmed-sub">Te esperamos, <strong>{confirmed.client}</strong>. Recibirás un recordatorio en <em>{confirmed.email}</em>.</p>
+
+            <div className="confirmed-card">
+              <div className="confirmed-card-header">
+                <span className="confirmed-card-label">Resumen de tu reserva</span>
+                <span className="confirmed-badge">Pendiente de confirmación</span>
+              </div>
+
+              <div className="confirmed-rows">
+                <div className="confirmed-row">
+                  <span className="confirmed-row-icon">{confirmed.serviceIcon}</span>
+                  <div>
+                    <div className="confirmed-row-label">Servicio</div>
+                    <div className="confirmed-row-value">{confirmed.service} · {confirmed.serviceDuration}</div>
+                  </div>
+                </div>
+
+                <div className="confirmed-row">
+                  <img src={confirmed.proImg} alt={confirmed.pro} className="confirmed-pro-img" />
+                  <div>
+                    <div className="confirmed-row-label">Profesional</div>
+                    <div className="confirmed-row-value">{confirmed.pro}</div>
+                  </div>
+                </div>
+
+                <div className="confirmed-row">
+                  <span className="confirmed-row-icon">📅</span>
+                  <div>
+                    <div className="confirmed-row-label">Fecha</div>
+                    <div className="confirmed-row-value" style={{ textTransform:'capitalize' }}>{confirmed.date}</div>
+                  </div>
+                </div>
+
+                <div className="confirmed-row">
+                  <span className="confirmed-row-icon">🕐</span>
+                  <div>
+                    <div className="confirmed-row-label">Hora</div>
+                    <div className="confirmed-row-value">{confirmed.time} hrs</div>
+                  </div>
+                </div>
+
+                <div className="confirmed-divider" />
+
+                <div className="confirmed-row confirmed-total-row">
+                  <span className="confirmed-row-icon">💳</span>
+                  <div>
+                    <div className="confirmed-row-label">Total a pagar</div>
+                    <div className="confirmed-row-value confirmed-total-value">{fmt(confirmed.total)}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="confirmed-actions">
+              <button className="btn-next" onClick={newBooking}>
+                + Nueva reserva
+              </button>
+              <button className="confirmed-cancel-btn" onClick={cancelBooking}>
+                Cancelar esta reserva
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="booking">
