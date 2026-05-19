@@ -10,7 +10,7 @@ const SERVICES = [
 ];
 const PROS = [
   { id:1, name:'Andrés F.',    spec:'Cortes Clásicos & Fade',  rating:'4.9', cuts:'1.240', img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'12 años de experiencia. Especialista en fades y cortes clásicos americanos.' },
-  { id:2, name:'Camila R.',    spec:'Corte + Barba Femenino',  rating:'5.0', cuts:'980',   img:'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'Primera maestra barbera del equipo. Especialista en diseños de barba y coloración.' },
+  { id:2, name:'Camila R.',    spec:'Corte + Barba Femenino',  rating:'5.0', cuts:'980',   img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'Primera maestra barbera del equipo. Especialista en diseños de barba y coloración.' },
   { id:3, name:'Sebastián M.', spec:'Diseño & Textura',        rating:'4.8', cuts:'1.560', img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'Referente en cortes de textura y técnicas internacionales. Ex-instructor.' },
 ];
 const SCHEDULE = [
@@ -101,7 +101,8 @@ export default function App() {
 
   // NAVEGACIÓN SIMPLIFICADA - Sin galería
   const navLinks: [string, string][] = [
-    ['services','Servicios'], ['team','Equipo'],
+    ['team','Equipo'],
+    ['booking','Reservar'],
     ['schedule','Horarios'],  ['location','Ubicación'], ['admin','Admin'],
   ];
 
@@ -223,7 +224,6 @@ export default function App() {
       </section>
 
       <MarqueeBar />
-      <ServicesSection />
       <TeamSection />
       <BookingSection notify={notify} />
       <ScheduleSection />
@@ -253,47 +253,6 @@ function MarqueeBar() {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// SERVICES
-// ═══════════════════════════════════════════════════════════════════════
-function ServicesSection() {
-  const selectAndScroll = (id: number) => {
-    scrollToId('booking');
-    setTimeout(() => { document.getElementById('sopt_' + id)?.click(); }, 700);
-  };
-  return (
-    <section id="services" className="section-full">
-      <div className="services-inner">
-        <div className="services-header">
-          <div>
-            <div className="section-label">Lo que hacemos</div>
-            <h2 className="section-title">Nuestros<br/><em>Servicios</em></h2>
-          </div>
-          <p style={{ maxWidth:'340px', color:'var(--gray-4)', fontWeight:300, fontSize:'0.95rem', lineHeight:1.8 }}>
-            Cada servicio realizado con productos de primera línea y técnicas desarrolladas a lo largo de años.
-          </p>
-        </div>
-        <div className="services-grid">
-          {SERVICES.map(s => (
-            <div className="service-card" key={s.id}
-              role="button" tabIndex={0}
-              onClick={() => selectAndScroll(s.id)}
-              onKeyDown={e => e.key === 'Enter' && selectAndScroll(s.id)}>
-              <span className="service-icon">{s.icon}</span>
-              <div className="service-name">{s.name}</div>
-              <div className="service-desc">{s.desc}</div>
-              <div className="service-meta">
-                <div className="service-price">{fmt(s.price)}</div>
-                <div className="service-duration">{s.duration}</div>
-              </div>
-              <button className="service-cta" tabIndex={-1}>→</button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 // ═══════════════════════════════════════════════════════════════════════
 // TEAM
