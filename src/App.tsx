@@ -23,7 +23,6 @@ const SCHEDULE = [
   { day:'D', name:'DOM', h:'Cerrado',         open:false },
 ];
 const TIME_SLOTS = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30'];
-const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const EMAIL_CONFIGS_DEFAULT = [
   { name:'Confirmación de reserva',   on:true  },
   { name:'Recordatorio 24h antes',    on:true  },
@@ -100,8 +99,9 @@ export default function App() {
     return () => { window.removeEventListener('scroll', onScroll); obs.disconnect(); };
   }, []);
 
+  // NAVEGACIÓN SIMPLIFICADA - Sin galería
   const navLinks: [string, string][] = [
-    ['services','Servicios'], ['team','Equipo'], ['gallery','Galería'],
+    ['services','Servicios'], ['team','Equipo'],
     ['schedule','Horarios'],  ['location','Ubicación'], ['admin','Admin'],
   ];
 
@@ -166,7 +166,7 @@ export default function App() {
                 fontFamily:'var(--ff-mono)', fontSize:'0.7rem',
                 letterSpacing:'0.2em', textTransform:'uppercase',
                 background:'var(--black)', color:'var(--white)',
-                textDecoration:'none', textAlign:'center',
+                textDecoration:'none', borderRadius:'4px', textAlign:'center',
               }}
               onClick={e => {
                 e.preventDefault(); setMobileMenuOpen(false);
@@ -190,7 +190,7 @@ export default function App() {
           </h1>
           <p className="hero-desc">
             Donde cada corte es una obra de técnica y cada visita, una experiencia irrepetible.
-            Las Condes, Santiago.
+            Conón, Valparaíso.
           </p>
           <div className="hero-actions">
             <a href="#booking" className="btn-primary"
@@ -217,7 +217,7 @@ export default function App() {
         <div className="hero-right">
           <img
             src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1200&q=85&auto=format"
-            alt="Barbero profesional"
+            alt="Barbero profesional cortando cabello"
           />
         </div>
       </section>
@@ -225,7 +225,6 @@ export default function App() {
       <MarqueeBar />
       <ServicesSection />
       <TeamSection />
-      <GallerySection />
       <BookingSection notify={notify} />
       <ScheduleSection />
       <LocationSection />
@@ -239,7 +238,7 @@ export default function App() {
 // MARQUEE
 // ═══════════════════════════════════════════════════════════════════════
 function MarqueeBar() {
-  const items = ['Cortes Clásicos','·','Diseño de Barba','·','Fade Perfecto','·','Afeitado Navaja','·','Barbería Premium','·','Est. 2016','·','Las Condes','·'];
+  const items = ['Cortes Clásicos','·','Diseño de Barba','·','Fade Perfecto','·','Afeitado Navaja','·','Barbería Premium','·','Est. 2016','·','Conón','·'];
   const all = [...items, ...items, ...items, ...items];
   return (
     <div className="marquee-wrapper">
@@ -338,36 +337,7 @@ function TeamSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// GALLERY
-// ═══════════════════════════════════════════════════════════════════════
-function GallerySection() {
-  const imgs = [
-    { src:'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1000&q=85&auto=format', label:'Corte Premium'   },
-    { src:'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=85&auto=format',  label:'El Maestro'      },
-    { src:'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=800&q=85&auto=format',  label:'Herramientas'    },
-    { src:'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=85&auto=format',  label:'Diseño de Barba' },
-    { src:'https://images.unsplash.com/photo-1622288432450-277d0fef5ed6?w=800&q=85&auto=format',  label:'El Ambiente'     },
-  ];
-  return (
-    <section id="gallery" className="section-full" style={{ padding:0 }}>
-      <div className="gallery-header">
-        <div className="section-label">Nuestro trabajo</div>
-        <h2 className="section-title">La <em>Galería</em></h2>
-      </div>
-      <div className="gallery-grid">
-        {imgs.map((img, i) => (
-          <div className="gallery-item" key={i}>
-            <img src={img.src} alt={img.label} loading="lazy"/>
-            <div className="gallery-item-label">{img.label}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// BOOKING
+// BOOKING - SIMPLIFICADO
 // ═══════════════════════════════════════════════════════════════════════
 type BookingState = {
   service: typeof SERVICES[0] | null;
@@ -379,8 +349,6 @@ type BookingState = {
 function BookingSection({ notify }: { notify:(m:string)=>void }) {
   const [step,     setStep]     = useState(1);
   const [booking,  setBooking]  = useState<BookingState>({ service:null, pro:null, date:null, time:null });
-  const [calYear,  setCalYear]  = useState(new Date().getFullYear());
-  const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [fname,    setFname]    = useState('');
   const [femail,   setFemail]   = useState('');
   const [fphone,   setFphone]   = useState('');
@@ -398,233 +366,121 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     if (!fname.trim() || !femail.includes('@') || fphone.length < 7) {
       notify('Completa todos los campos correctamente'); return;
     }
-    setStep(5);
-    notify('✉️ Email de confirmación enviado a ' + femail);
+    const a = { id:99, client:fname, service:booking.service?.name ?? '', pro:booking.pro?.name ?? '', date:booking.date?.toLocaleDateString('es-CL') ?? '', time:booking.time ?? '', status:'pendiente' as const, total:booking.service?.price ?? 0, email:femail };
+    const saved = JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT));
+    saved.push(a);
+    localStorage.setItem('appointments', JSON.stringify(saved));
+    notify('✓ Reserva confirmada'); setStep(1); setBooking({ service:null, pro:null, date:null, time:null }); setFname(''); setFemail(''); setFphone('');
   };
-
-  const reset = () => {
-    setBooking({ service:null, pro:null, date:null, time:null });
-    setFname(''); setFemail(''); setFphone('');
-    setStep(1);
-  };
-
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  const firstDay    = new Date(calYear, calMonth, 1).getDay();
-  const firstDayAdj = firstDay === 0 ? 6 : firstDay - 1;
-  const today       = new Date();
-
-  const dateStr = booking.date
-    ? booking.date.toLocaleDateString('es-CL', { day:'numeric', month:'long', year:'numeric' })
-    : '—';
-
-  const SummaryRows = () => (
-    <>
-      {([
-        ['Servicio',    booking.service?.name ?? '—'],
-        ['Profesional', booking.pro?.name     ?? '—'],
-        ['Fecha',       dateStr],
-        ['Hora',        booking.time          ?? '—'],
-      ] as [string,string][]).map(([k, v]) => (
-        <div key={k} className="summary-row">
-          <span style={{ color:'var(--gray-5)' }}>{k}</span><span>{v}</span>
-        </div>
-      ))}
-      <div className="summary-row">
-        <span>Total</span>
-        <span>{fmt(booking.service?.price ?? 0)}</span>
-      </div>
-    </>
-  );
 
   return (
-    <section id="booking" className="section-full">
-      <div className="booking-inner">
-        <div className="booking-grid">
-          {/* Info left */}
-          <div>
-            <div className="section-label">Reserva online</div>
-            <h2 className="section-title">Agenda<br/><em>Tu hora</em></h2>
-            <div className="booking-info">
-              {[
-                { icon:'📍', label:'Dirección',    value:'Av. Apoquindo 4501, Las Condes' },
-                { icon:'📅', label:'Horario',      value:'Lunes a Sábado, 09:00–19:00'   },
-                { icon:'✉️', label:'Confirmación', value:'Email automático al instante'   },
-                { icon:'🔔', label:'Recordatorio', value:'24 horas antes de tu cita'      },
-              ].map(item => (
-                <div className="booking-info-item" key={item.label}>
-                  <div className="booking-info-icon">{item.icon}</div>
-                  <div>
-                    <div className="booking-info-label">{item.label}</div>
-                    <div className="booking-info-value">{item.value}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+    <section id="booking">
+      <div className="booking-container">
+        <div className="booking-header">
+          <div className="section-label">Agenda tu turno</div>
+          <h2 className="section-title">Reservar<br/><em>Hora</em></h2>
+        </div>
 
-          {/* Form right */}
-          <div className="booking-form-wrap">
-            <div className="booking-steps">
-              {stepLabels.map((l, i) => (
-                <div key={l} className={`booking-step ${step === i+1 ? 'active' : ''} ${step > i+1 ? 'done' : ''}`}>
-                  <div className="booking-step-num">{step > i+1 ? '✓' : i+1}</div>
-                  <div className="booking-step-label">{l}</div>
-                </div>
-              ))}
+        {/* PROGRESS */}
+        <div className="booking-progress">
+          {stepLabels.map((l, i) => (
+            <div key={i} className={`progress-step ${i + 1 <= step ? 'active' : ''} ${i + 1 === step ? 'current' : ''}`}>
+              <div className="progress-dot">{i + 1}</div>
+              <span className="progress-label">{l}</span>
             </div>
+          ))}
+        </div>
 
-            {step === 1 && (
-              <div>
-                <div className="form-title">¿Qué servicio quieres?</div>
-                <div className="form-grid">
-                  {SERVICES.map(s => (
-                    <div key={s.id} id={'sopt_' + s.id}
-                      className={`service-option ${booking.service?.id === s.id ? 'selected' : ''}`}
-                      role="button" tabIndex={0}
-                      onClick={() => setBooking(b => ({ ...b, service:s }))}
-                      onKeyDown={e => e.key === 'Enter' && setBooking(b => ({ ...b, service:s }))}>
-                      <div className="service-opt-name">{s.icon} {s.name}</div>
-                      <div className="service-opt-meta">{s.duration}</div>
-                      <div className="service-opt-price">{fmt(s.price)}</div>
+        <div className="booking-form-wrap">
+          {/* STEP 1: SERVICIO */}
+          {step === 1 && (
+            <div className="booking-step">
+              <h3 className="step-title">Selecciona un servicio</h3>
+              <div className="services-select">
+                {SERVICES.map(s => (
+                  <button key={s.id}
+                    id={'sopt_' + s.id}
+                    className={`service-option ${booking.service?.id === s.id ? 'selected' : ''}`}
+                    onClick={() => setBooking({ ...booking, service: s })}>
+                    <div className="service-option-icon">{s.icon}</div>
+                    <div className="service-option-info">
+                      <div className="service-option-name">{s.name}</div>
+                      <div className="service-option-price">{fmt(s.price)}</div>
                     </div>
+                    <div className="service-option-duration">{s.duration}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: PROFESIONAL */}
+          {step === 2 && (
+            <div className="booking-step">
+              <h3 className="step-title">Elige tu profesional</h3>
+              <div className="pros-select">
+                {PROS.map(p => (
+                  <button key={p.id}
+                    className={`pro-option ${booking.pro?.id === p.id ? 'selected' : ''}`}
+                    onClick={() => setBooking({ ...booking, pro: p })}>
+                    <img src={p.img} alt={p.name} className="pro-option-img"/>
+                    <div className="pro-option-info">
+                      <div className="pro-option-name">{p.name}</div>
+                      <div className="pro-option-spec">{p.spec}</div>
+                      <div className="pro-option-rating">{p.rating} ★ · {p.cuts} cortes</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: FECHA Y HORA */}
+          {step === 3 && (
+            <div className="booking-step">
+              <h3 className="step-title">Elige fecha y hora</h3>
+              <div className="booking-datetime">
+                <div className="time-slots">
+                  {TIME_SLOTS.map(t => (
+                    <button key={t}
+                      className={`time-slot ${booking.time === t ? 'selected' : ''}`}
+                      onClick={() => setBooking({ ...booking, time: t })}>
+                      {t}
+                    </button>
                   ))}
                 </div>
-                <div className="form-btns">
-                  <span/>
-                  <button className="btn-next" onClick={() => goStep(2)}>Continuar →</button>
-                </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {step === 2 && (
-              <div>
-                <div className="form-title">¿Con qué maestro?</div>
-                <div style={{ display:'grid', gap:'0.75rem' }}>
-                  {PROS.map(p => (
-                    <div key={p.id}
-                      className={`pro-option ${booking.pro?.id === p.id ? 'selected' : ''}`}
-                      style={{ display:'flex', alignItems:'center', gap:'1rem' }}
-                      role="button" tabIndex={0}
-                      onClick={() => setBooking(b => ({ ...b, pro:p }))}
-                      onKeyDown={e => e.key === 'Enter' && setBooking(b => ({ ...b, pro:p }))}>
-                      <img className="pro-opt-avatar" src={p.img} alt={p.name}/>
-                      <div>
-                        <div className="pro-opt-name">{p.name}</div>
-                        <div className="pro-opt-spec">{p.spec}</div>
-                        <div className="pro-opt-rating">{p.rating} ★</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="form-btns">
-                  <button className="btn-back" onClick={() => setStep(1)}>← Atrás</button>
-                  <button className="btn-next" onClick={() => goStep(3)}>Continuar →</button>
-                </div>
+          {/* STEP 4: DATOS */}
+          {step === 4 && (
+            <div className="booking-step">
+              <h3 className="step-title">Completa tus datos</h3>
+              <div className="booking-form">
+                <input type="text" placeholder="Tu nombre" value={fname} onChange={e => setFname(e.target.value)}/>
+                <input type="email" placeholder="Tu email" value={femail} onChange={e => setFemail(e.target.value)}/>
+                <input type="tel" placeholder="Tu teléfono" value={fphone} onChange={e => setFphone(e.target.value)}/>
               </div>
-            )}
+            </div>
+          )}
 
-            {step === 3 && (
-              <div>
-                <div className="form-title">¿Cuándo te acomoda?</div>
-                <div className="calendar">
-                  <div className="calendar-header">
-                    <button className="calendar-nav" onClick={() => {
-                      if (calMonth === 0) { setCalMonth(11); setCalYear(y => y - 1); }
-                      else setCalMonth(m => m - 1);
-                    }}>‹</button>
-                    <div className="calendar-title">{MONTHS[calMonth]} {calYear}</div>
-                    <button className="calendar-nav" onClick={() => {
-                      if (calMonth === 11) { setCalMonth(0); setCalYear(y => y + 1); }
-                      else setCalMonth(m => m + 1);
-                    }}>›</button>
-                  </div>
-                  <div className="calendar-grid">
-                    {['LU','MA','MI','JU','VI','SÁ','DO'].map(d => (
-                      <div key={d} className="cal-day-label">{d}</div>
-                    ))}
-                    {Array(firstDayAdj).fill(null).map((_, i) => (
-                      <div key={'e' + i} className="cal-day empty"/>
-                    ))}
-                    {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
-                      const thisDate = new Date(calYear, calMonth, d);
-                      const isPast   = thisDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                      const isSun    = thisDate.getDay() === 0;
-                      const isSel    = booking.date?.getDate() === d && booking.date?.getMonth() === calMonth && booking.date?.getFullYear() === calYear;
-                      const isTod    = today.getDate() === d && today.getMonth() === calMonth && today.getFullYear() === calYear;
-                      let cls = 'cal-day';
-                      if (isPast || isSun) cls += ' disabled';
-                      else if (isSel)      cls += ' selected';
-                      else if (isTod)      cls += ' today';
-                      return (
-                        <div key={d} className={cls}
-                          role={!(isPast || isSun) ? 'button' : undefined}
-                          tabIndex={!(isPast || isSun) ? 0 : undefined}
-                          onClick={() => !(isPast || isSun) && setBooking(b => ({ ...b, date: new Date(calYear, calMonth, d), time:null }))}
-                          onKeyDown={e => e.key === 'Enter' && !(isPast || isSun) && setBooking(b => ({ ...b, date: new Date(calYear, calMonth, d), time:null }))}>
-                          {d}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                {booking.date && (
-                  <div className="time-slots">
-                    {TIME_SLOTS.map(t => (
-                      <div key={t}
-                        className={`time-slot ${booking.time === t ? 'selected' : ''}`}
-                        role="button" tabIndex={0}
-                        onClick={() => setBooking(b => ({ ...b, time:t }))}
-                        onKeyDown={e => e.key === 'Enter' && setBooking(b => ({ ...b, time:t }))}>
-                        {t}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="form-btns">
-                  <button className="btn-back" onClick={() => setStep(2)}>← Atrás</button>
-                  {booking.date && booking.time && (
-                    <button className="btn-next" onClick={() => goStep(4)}>Continuar →</button>
-                  )}
-                </div>
-              </div>
+          {/* BOTONES NAVEGACIÓN */}
+          <div className="booking-actions">
+            {step > 1 && (
+              <button className="btn-secondary" onClick={() => setStep(step - 1)}>
+                ← Atrás
+              </button>
             )}
-
+            {step < 4 && (
+              <button className="btn-primary" onClick={() => goStep(step + 1)}>
+                Siguiente →
+              </button>
+            )}
             {step === 4 && (
-              <div>
-                <div className="form-title">Tus datos</div>
-                <div className="field">
-                  <label htmlFor="fname">Nombre completo *</label>
-                  <input id="fname" value={fname} onChange={e => setFname(e.target.value)} placeholder="Juan Pérez"/>
-                </div>
-                <div className="field-row">
-                  <div className="field">
-                    <label htmlFor="femail">Email *</label>
-                    <input id="femail" type="email" value={femail} onChange={e => setFemail(e.target.value)} placeholder="juan@email.cl"/>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="fphone">Teléfono *</label>
-                    <input id="fphone" type="tel" value={fphone} onChange={e => setFphone(e.target.value)} placeholder="+56 9 1234 5678"/>
-                  </div>
-                </div>
-                <div className="booking-summary"><SummaryRows/></div>
-                <div className="form-btns">
-                  <button className="btn-back" onClick={() => setStep(3)}>← Atrás</button>
-                  <button className="btn-next" onClick={confirmBooking}>Confirmar reserva →</button>
-                </div>
-              </div>
-            )}
-
-            {step === 5 && (
-              <div className="booking-confirm">
-                <div className="confirm-icon">✓</div>
-                <div className="confirm-title">¡Reserva confirmada!</div>
-                <div className="confirm-sub">Te enviamos los detalles por email y recibirás un recordatorio 24h antes.</div>
-                <div className="booking-summary"><SummaryRows/></div>
-                <button className="btn-next" onClick={reset}
-                  style={{ margin:'1.5rem auto 0', display:'flex' }}>
-                  Hacer otra reserva →
-                </button>
-              </div>
+              <button className="btn-primary" onClick={confirmBooking}>
+                ✓ Confirmar Reserva
+              </button>
             )}
           </div>
         </div>
@@ -637,25 +493,17 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
 // SCHEDULE
 // ═══════════════════════════════════════════════════════════════════════
 function ScheduleSection() {
-  const todayDow = new Date().getDay();
   return (
-    <section id="schedule" className="section-full">
-      <div className="schedule-inner">
-        <div className="section-label">Cuándo abrimos</div>
-        <h2 className="section-title">Horario<br/><em>Semanal</em></h2>
-        <div className="schedule-grid">
-          {SCHEDULE.map((d, i) => {
-            const isToday = i === 6 ? todayDow === 0 : todayDow === i + 1;
-            return (
-              <div key={i} className={`schedule-day${!d.open ? ' closed' : ''}${isToday ? ' today-col' : ''}`}>
-                {isToday && <div className="today-badge">HOY</div>}
-                <div className="sched-day-letter">{d.day}</div>
-                <div className="sched-day-name">{d.name}</div>
-                <div className="sched-hours">{d.h}</div>
-              </div>
-            );
-          })}
-        </div>
+    <section id="schedule">
+      <div className="section-label">Disponibilidad</div>
+      <h2 className="section-title">Horarios de<br/><em>Atención</em></h2>
+      <div className="schedule-grid">
+        {SCHEDULE.map(d => (
+          <div key={d.name} className={`schedule-day ${!d.open ? 'closed' : ''}`}>
+            <div className="schedule-day-name">{d.name}</div>
+            <div className="schedule-day-time">{d.h}</div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -666,36 +514,38 @@ function ScheduleSection() {
 // ═══════════════════════════════════════════════════════════════════════
 function LocationSection() {
   return (
-    <section id="location" style={{ padding:0, maxWidth:'none' }}>
+    <section id="location" style={{ padding:0, margin:0 }}>
       <div className="location-grid">
         <div className="location-info">
-          <div className="section-label">Dónde estamos</div>
-          <h2 className="section-title">Nuestra<br/><em>Ubicación</em></h2>
-          <div className="contact-items">
-            {[
-              { icon:'📍', label:'Dirección', value:'Av. Apoquindo 4501, Las Condes' },
-              { icon:'📞', label:'Teléfono',  value:'+56 2 1234 5678'               },
-              { icon:'✉️', label:'Email',     value:'hola@noirbarberia.cl'           },
-            ].map(item => (
-              <div className="contact-item" key={item.label}>
-                <div className="contact-item-icon">{item.icon}</div>
-                <div>
-                  <div className="contact-item-l">{item.label}</div>
-                  <div className="contact-item-v">{item.value}</div>
-                </div>
+          <div className="section-label">Encuentranos</div>
+          <h2 className="section-title">Ubicación</h2>
+          <div className="location-details">
+            <div className="location-item">
+              <span className="location-icon">📍</span>
+              <div>
+                <div className="location-label">Dirección</div>
+                <div className="location-value">Av. Valparaíso 1234, Conón, Valparaíso</div>
               </div>
-            ))}
+            </div>
+            <div className="location-item">
+              <span className="location-icon">☎️</span>
+              <div>
+                <div className="location-label">Teléfono</div>
+                <div className="location-value">+56 2 1234 5678</div>
+              </div>
+            </div>
+            <div className="location-item">
+              <span className="location-icon">✉️</span>
+              <div>
+                <div className="location-label">Email</div>
+                <div className="location-value">hola@noirbarberia.cl</div>
+              </div>
+            </div>
           </div>
-          <button className="whatsapp-btn">💬 Escribir por WhatsApp</button>
         </div>
         <div className="location-map-placeholder">
-          <div className="location-map-grid"></div>
-          <div className="location-pin">
-            <div className="location-pin-dot">
-              <div className="location-pin-dot-inner">N</div>
-            </div>
-            <div className="location-address">Av. Apoquindo 4501</div>
-            <div className="location-sub">Las Condes, Santiago</div>
+          <div style={{ padding:'2rem', textAlign:'center', color:'var(--gray-5)' }}>
+            Mapa interactivo aquí
           </div>
         </div>
       </div>
@@ -704,165 +554,90 @@ function LocationSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// ADMIN – LOGIN
+// ADMIN SECTION
 // ═══════════════════════════════════════════════════════════════════════
-function AdminLogin({ onLogin }: { onLogin: () => void }) {
-  const [password, setPassword] = useState('');
-  const [error,    setError]    = useState(false);
-  const [loading,  setLoading]  = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => { inputRef.current?.focus(); }, []);
-
-  const handleSubmit = () => {
-    if (!password.trim()) return;
-    setLoading(true);
-    setTimeout(() => {
-      if (password === ADMIN_PASSWORD) {
-        onLogin();
-      } else {
-        setError(true);
-        setPassword('');
-        setLoading(false);
-        setTimeout(() => setError(false), 3000);
-        inputRef.current?.focus();
-      }
-    }, 600);
-  };
-
+function AdminSection({ notify }: { notify:(m:string)=>void }) {
+  const [authenticated, setAuthenticated] = useState(false);
   return (
-    <div className="admin-login-screen">
-      <div className="admin-login-card">
-        <div className="admin-login-logo">
-          <div className="nav-logo-mark">N</div>
-          <span className="nav-logo-text">NOIR<span>&amp;</span>CO</span>
-        </div>
-        <div className="admin-login-title">Panel de administración</div>
-        <div className="admin-login-sub">
-          Acceso restringido. Ingresa tu contraseña para continuar.
-        </div>
-        {error && (
-          <div className="admin-login-error">
-            Contraseña incorrecta. Inténtalo de nuevo.
-          </div>
-        )}
-        <div className="field">
-          <label htmlFor="admin-pass">Contraseña</label>
-          <input
-            id="admin-pass"
-            ref={inputRef}
-            type="password"
-            value={password}
-            onChange={e => { setPassword(e.target.value); setError(false); }}
-            onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-            placeholder="••••••••"
-            autoComplete="current-password"
-          />
-        </div>
-        <button
-          className="btn-primary"
-          style={{ width:'100%', justifyContent:'center', marginTop:'0.5rem' }}
-          onClick={handleSubmit}
-          disabled={loading}>
-          {loading ? 'Verificando...' : 'Ingresar →'}
-        </button>
-        <div className="admin-login-hint">
-          Contraseña de demo: <strong>noir2026</strong>
-        </div>
+    <section id="admin" style={{ padding:0, maxWidth:'none', margin:0, width:'100%' }}>
+      {authenticated ? (
+        <AdminPanel
+          notify={notify}
+          onLogout={() => { setAuthenticated(false); notify('Sesión cerrada correctamente'); }}
+        />
+      ) : (
+        <AdminLogin
+          onLogin={() => { setAuthenticated(true); notify('✓ Sesión iniciada correctamente'); }}
+        />
+      )}
+    </section>
+  );
+}
+
+function AdminLogin({ onLogin }: { onLogin:()=>void }) {
+  const [pass, setPass] = useState('');
+  const handleLogin = () => {
+    if (pass === ADMIN_PASSWORD) {
+      onLogin();
+    } else {
+      alert('Contraseña incorrecta');
+    }
+  };
+  return (
+    <div className="admin-login">
+      <div className="admin-login-wrap">
+        <h2>NOIR & CO — Admin</h2>
+        <input type="password" placeholder="Contraseña" value={pass} onChange={e => setPass(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()}/>
+        <button onClick={handleLogin}>Ingresar</button>
       </div>
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// ADMIN – PANEL
-// ═══════════════════════════════════════════════════════════════════════
-type Appt = {
-  id:number; client:string; service:string; pro:string;
-  date:string; time:string; status:string; total:number; email:string;
-};
+function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()=>void }) {
+  const [appointments, setAppointments] = useState(JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT)));
+  const [emailConfigs, setEmailConfigs] = useState(EMAIL_CONFIGS_DEFAULT);
+  const [searchFilter, setSearchFilter] = useState('');
 
-function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void; onLogout:()=>void }) {
-  const [appts,        setAppts]        = useState<Appt[]>(APPOINTMENTS_DEFAULT);
-  const [filter,       setFilter]       = useState('todos');
-  const [search,       setSearch]       = useState('');
-  const [emailConfigs, setEmailConfigs] = useState(EMAIL_CONFIGS_DEFAULT.map(e => ({ ...e })));
-
-  const updateStatus = (id: number, status: string) =>
-    setAppts(a => a.map(x => x.id === id ? { ...x, status } : x));
-  const deleteAppt = (id: number) => {
-    setAppts(a => a.filter(x => x.id !== id));
-    notify('Cita eliminada del sistema');
-  };
-  const sendReminder = (id: number) => {
-    const a = appts.find(x => x.id === id);
-    if (a) notify(`📱 Recordatorio enviado a ${a.client}`);
-  };
-  const toggleEmail = (i: number) =>
-    setEmailConfigs(c => c.map((e, j) => j === i ? { ...e, on:!e.on } : e));
-
-  const filtered = appts
-    .filter(a => filter === 'todos' || a.status === filter)
-    .filter(a => !search
-      || a.client.toLowerCase().includes(search.toLowerCase())
-      || a.service.toLowerCase().includes(search.toLowerCase()));
-
-  const confirmed = appts.filter(a => a.status === 'confirmado');
-  const pending   = appts.filter(a => a.status === 'pendiente');
-  const revenue   = confirmed.reduce((s, a) => s + a.total, 0);
-
-  const kpis = [
-    { icon:'📅', val: String(appts.length),     label:'Total citas',  change:'+3 esta semana'                                                  },
-    { icon:'✅', val: String(confirmed.length), label:'Confirmadas',  change:`${Math.round(confirmed.length / appts.length * 100)}% del total` },
-    { icon:'⏳', val: String(pending.length),   label:'Pendientes',   change:'Requieren atención'                                              },
-    { icon:'💰', val: fmt(revenue),             label:'Ingresos',     change:'+12% vs semana anterior'                                         },
-  ];
+  const filtered = appointments.filter((a:any) => a.client.toLowerCase().includes(searchFilter.toLowerCase()) || a.email.includes(searchFilter));
+  const updateStatus = (id: number, status: string) => { const upd = appointments.map((a:any) => a.id === id ? { ...a, status } : a); setAppointments(upd); localStorage.setItem('appointments', JSON.stringify(upd)); };
+  const deleteAppt = (id: number) => { const upd = appointments.filter((a:any) => a.id !== id); setAppointments(upd); localStorage.setItem('appointments', JSON.stringify(upd)); notify('Cita eliminada'); };
+  const sendReminder = (_id: number) => { notify('📱 Recordatorio enviado'); };
+  const toggleEmail = (i: number) => { const upd = emailConfigs.map((e, j) => j === i ? { ...e, on: !e.on } : e); setEmailConfigs(upd); };
 
   const barDays = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
-  const barVals = [3, 5, 2, 7, 6, 4];
-  const barMax  = Math.max(...barVals);
+  const barVals = [5, 7, 4, 6, 8, 5];
+  const barMax = Math.max(...barVals);
 
   return (
-    <div className="admin-inner">
-      <div className="admin-topbar">
-        <div>
-          <div className="section-label">Panel de control</div>
-          <h2 className="section-title">Admin<em>istración</em></h2>
-        </div>
-        <button className="admin-logout-btn" onClick={onLogout}>
-          ← Cerrar sesión
-        </button>
+    <div className="admin-panel">
+      <div className="admin-header">
+        <h2>Dashboard</h2>
+        <button onClick={onLogout} className="logout-btn">Salir</button>
       </div>
 
       <div className="admin-kpis">
-        {kpis.map(k => (
-          <div className="kpi" key={k.label}>
-            <div className="kpi-icon">{k.icon}</div>
-            <div className="kpi-value">{k.val}</div>
-            <div className="kpi-label">{k.label}</div>
-            <div className="kpi-change">{k.change}</div>
-          </div>
-        ))}
+        <div className="kpi">
+          <div className="kpi-value">{appointments.length}</div>
+          <div className="kpi-label">Citas Totales</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-value">{appointments.filter((a:any) => a.status === 'confirmado').length}</div>
+          <div className="kpi-label">Confirmadas</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-value">{fmt(appointments.reduce((s:number, a:any) => s + a.total, 0))}</div>
+          <div className="kpi-label">Ingresos</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-value">{appointments.filter((a:any) => a.status === 'pendiente').length}</div>
+          <div className="kpi-label">Pendientes</div>
+        </div>
       </div>
 
-      <div className="admin-controls">
-        <input className="admin-search" placeholder="Buscar cliente, servicio..."
-          value={search} onChange={e => setSearch(e.target.value)}/>
-        {['todos','confirmado','pendiente','cancelado'].map(f => (
-          <button key={f}
-            className={`admin-filter${filter === f ? ' active' : ''}`}
-            onClick={() => setFilter(f)}>
-            {f === 'todos' ? 'Todos' : f.charAt(0).toUpperCase() + f.slice(1) + 's'}
-          </button>
-        ))}
-        <button className="btn-primary"
-          style={{ padding:'.7rem 1.4rem', fontSize:'0.62rem', letterSpacing:'.12em' }}
-          onClick={() => notify('⚡ Script Python ejecutado: 3 recordatorios enviados')}>
-          <span>⚡ Ejecutar script</span>
-        </button>
-      </div>
-
-      <div className="admin-table-wrap">
+      <div className="admin-section">
+        <h3>Citas</h3>
+        <input type="text" placeholder="Buscar cliente..." value={searchFilter} onChange={e => setSearchFilter(e.target.value)} className="search-input"/>
         <table className="admin-table">
           <thead>
             <tr>
@@ -878,7 +653,7 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void; onLogout:()
                   No hay citas que coincidan
                 </td>
               </tr>
-            ) : filtered.map(a => (
+            ) : filtered.map((a:any) => (
               <tr key={a.id}>
                 <td>
                   <div style={{ fontWeight:600 }}>{a.client}</div>
@@ -942,36 +717,9 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void; onLogout:()
               </li>
             ))}
           </ul>
-          <div className="admin-code-block">
-            <span className="code-comment"># Python backend simulado</span><br/>
-            <span className="code-keyword">import</span> smtplib, schedule<br/>
-            reminder_service.send_24h_reminder(<span className="code-string">'appointments'</span>)<br/>
-            <span className="code-comment"># → Ejecutado: Lun–Sáb 09:00</span>
-          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// ADMIN SECTION – login gate
-// ═══════════════════════════════════════════════════════════════════════
-function AdminSection({ notify }: { notify:(m:string)=>void }) {
-  const [authenticated, setAuthenticated] = useState(false);
-  return (
-    <section id="admin" style={{ padding:0, maxWidth:'none', margin:0, width:'100%' }}>
-      {authenticated ? (
-        <AdminPanel
-          notify={notify}
-          onLogout={() => { setAuthenticated(false); notify('Sesión cerrada correctamente'); }}
-        />
-      ) : (
-        <AdminLogin
-          onLogin={() => { setAuthenticated(true); notify('✓ Sesión iniciada correctamente'); }}
-        />
-      )}
-    </section>
   );
 }
 
@@ -990,12 +738,12 @@ function FooterSection() {
                 NOIR<span>&amp;</span>CO
               </span>
             </div>
-            <p>Barbería de precisión artesanal. Est. 2016, Santiago de Chile.</p>
+            <p>Barbería de precisión artesanal. Est. 2016, Conón, Valparaíso.</p>
           </div>
           <div>
             <div className="footer-col-title">Navegar</div>
             <ul className="footer-links">
-              {[['services','Servicios'],['team','Equipo'],['gallery','Galería'],['booking','Reservar']].map(([id, label]) => (
+              {[['services','Servicios'],['team','Equipo'],['booking','Reservar']].map(([id, label]) => (
                 <li key={id}>
                   <a href={'#' + id} onClick={e => { e.preventDefault(); scrollToId(id); }}>{label}</a>
                 </li>
@@ -1015,7 +763,7 @@ function FooterSection() {
             <ul className="footer-links">
               <li><a href="#">+56 2 1234 5678</a></li>
               <li><a href="#">hola@noirbarberia.cl</a></li>
-              <li><a href="#">Av. Apoquindo 4501</a></li>
+              <li><a href="#">Av. Valparaíso 1234</a></li>
             </ul>
           </div>
         </div>
