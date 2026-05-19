@@ -296,6 +296,163 @@ function TeamSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// DATE + TIME PICKER
+// ═══════════════════════════════════════════════════════════════════════
+const DAY_NAMES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Slots artificialmente ocupados para demostración
+const TAKEN: Record<string, string[]> = {
+  '2026-05-19': ['09:00','10:00','11:00','14:00'],
+  '2026-05-20': ['09:30','10:30','15:00','16:00','17:00'],
+  '2026-05-21': ['09:00','09:30','10:00','10:30','11:00'],
+  '2026-05-22': ['14:00','14:30','15:00','15:30'],
+  '2026-05-26': ['09:00','11:30','12:00','12:30'],
+};
+
+function dateKey(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+
+function DateTimeStep({
+  booking,
+  setBooking,
+}: {
+  booking: { date: Date | null; time: string | null; service: typeof SERVICES[0] | null; pro: typeof PROS[0] | null };
+  setBooking: (b: any) => void;
+}) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [calYear,  setCalYear]  = useState(today.getFullYear());
+  const [calMonth, setCalMonth] = useState(today.getMonth());
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  const prevMonth = () => {
+    if (calMonth === 0) { setCalMonth(11); setCalYear(y => y - 1); }
+    else setCalMonth(m => m - 1);
+  };
+  const nextMonth = () => {
+    if (calMonth === 11) { setCalMonth(0); setCalYear(y => y + 1); }
+    else setCalMonth(m => m + 1);
+  };
+
+  const selectDate = (day: number) => {
+    const d = new Date(calYear, calMonth, day);
+    setBooking({ ...booking, date: d, time: null });
+  };
+
+  const takenForDate = booking.date ? (TAKEN[dateKey(booking.date)] ?? []) : [];
+  const availableSlots = booking.date
+    ? TIME_SLOTS.filter(t => !takenForDate.includes(t))
+    : [];
+  const unavailableSlots = booking.date
+    ? TIME_SLOTS.filter(t => takenForDate.includes(t))
+    : [];
+
+  // blanks before day 1 (week starts Monday)
+  const blanks = (firstDay + 6) % 7;
+
+  return (
+    <div className="booking-step">
+      <h3 className="step-title">Elige fecha y hora</h3>
+      <div className="booking-datetime">
+
+        {/* CALENDAR */}
+        <div className="cal-wrap">
+          <div className="cal-header">
+            <button className="cal-nav" onClick={prevMonth}>‹</button>
+            <span className="cal-month-label">{MONTH_NAMES[calMonth]} {calYear}</span>
+            <button className="cal-nav" onClick={nextMonth}>›</button>
+          </div>
+          <div className="cal-grid">
+            {['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d => (
+              <div key={d} className="cal-day-name">{d}</div>
+            ))}
+            {Array.from({ length: blanks }).map((_, i) => (
+              <div key={'b' + i} />
+            ))}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1;
+              const d = new Date(calYear, calMonth, day);
+              const isPast    = d < today;
+              const isSunday  = d.getDay() === 0;
+              const isSelected = booking.date ? dateKey(d) === dateKey(booking.date) : false;
+              const isToday   = dateKey(d) === dateKey(today);
+              const hasTaken  = TAKEN[dateKey(d)]?.length > 0;
+              const fullyTaken = TAKEN[dateKey(d)]?.length >= TIME_SLOTS.length;
+              const disabled  = isPast || isSunday;
+              return (
+                <button
+                  key={day}
+                  disabled={disabled}
+                  onClick={() => selectDate(day)}
+                  className={[
+                    'cal-day',
+                    isSelected  ? 'selected'   : '',
+                    isToday     ? 'today'       : '',
+                    disabled    ? 'disabled'    : '',
+                    fullyTaken  ? 'fully-taken' : hasTaken ? 'partial' : '',
+                  ].join(' ')}>
+                  {day}
+                  {!disabled && hasTaken && !fullyTaken && <span className="cal-dot" />}
+                </button>
+              );
+            })}
+          </div>
+          <div className="cal-legend">
+            <span><span className="legend-dot partial" />Parcialmente ocupado</span>
+            <span><span className="legend-dot fully-taken" />Sin disponibilidad</span>
+          </div>
+        </div>
+
+        {/* TIME SLOTS */}
+        <div className="timeslots-wrap">
+          {!booking.date ? (
+            <div className="timeslots-placeholder">
+              <span>←</span>
+              <p>Selecciona una fecha para ver los horarios disponibles</p>
+            </div>
+          ) : (
+            <>
+              <div className="timeslots-date-label">
+                {DAY_NAMES[booking.date.getDay()]}{' '}
+                {booking.date.getDate()} de {MONTH_NAMES[booking.date.getMonth()]}
+              </div>
+              <div className="timeslots-group">
+                <div className="timeslots-group-label">Disponibles ({availableSlots.length})</div>
+                <div className="time-slots">
+                  {availableSlots.map(t => (
+                    <button key={t}
+                      className={`time-slot ${booking.time === t ? 'selected' : ''}`}
+                      onClick={() => setBooking({ ...booking, time: t })}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {unavailableSlots.length > 0 && (
+                <div className="timeslots-group">
+                  <div className="timeslots-group-label">Ocupados</div>
+                  <div className="time-slots">
+                    {unavailableSlots.map(t => (
+                      <button key={t} className="time-slot taken" disabled>{t}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // BOOKING - SIMPLIFICADO
 // ═══════════════════════════════════════════════════════════════════════
 type BookingState = {
@@ -396,20 +553,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
 
           {/* STEP 3: FECHA Y HORA */}
           {step === 3 && (
-            <div className="booking-step">
-              <h3 className="step-title">Elige fecha y hora</h3>
-              <div className="booking-datetime">
-                <div className="time-slots">
-                  {TIME_SLOTS.map(t => (
-                    <button key={t}
-                      className={`time-slot ${booking.time === t ? 'selected' : ''}`}
-                      onClick={() => setBooking({ ...booking, time: t })}>
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <DateTimeStep booking={booking} setBooking={setBooking} />
           )}
 
           {/* STEP 4: DATOS */}
@@ -427,17 +571,17 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
           {/* BOTONES NAVEGACIÓN */}
           <div className="booking-actions">
             {step > 1 && (
-              <button className="btn-secondary" onClick={() => setStep(step - 1)}>
+              <button className="btn-back" onClick={() => setStep(step - 1)}>
                 ← Atrás
               </button>
             )}
             {step < 4 && (
-              <button className="btn-primary" onClick={() => goStep(step + 1)}>
+              <button className="btn-next" onClick={() => goStep(step + 1)}>
                 Siguiente →
               </button>
             )}
             {step === 4 && (
-              <button className="btn-primary" onClick={confirmBooking}>
+              <button className="btn-confirm" onClick={confirmBooking}>
                 ✓ Confirmar Reserva
               </button>
             )}
