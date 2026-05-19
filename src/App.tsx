@@ -185,7 +185,7 @@ export default function App() {
           </div>
           <h1 className="hero-title">
             Barbería<br/>
-            <em>de precisión</em><br/>
+            <em> de precisión</em><br/>
             artesanal.
           </h1>
           <p className="hero-desc">
