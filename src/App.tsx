@@ -223,7 +223,7 @@ export default function App() {
       </section>
 
       <MarqueeBar />
-      <ServicesSection notify={notify} />
+      <ServicesSection />
       <TeamSection />
       <GallerySection />
       <BookingSection notify={notify} />
