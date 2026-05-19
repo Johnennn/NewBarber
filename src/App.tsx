@@ -257,7 +257,7 @@ function MarqueeBar() {
 // ═══════════════════════════════════════════════════════════════════════
 // SERVICES
 // ═══════════════════════════════════════════════════════════════════════
-function ServicesSection({ notify }: { notify:(m:string)=>void }) {
+function ServicesSection() {
   const selectAndScroll = (id: number) => {
     scrollToId('booking');
     setTimeout(() => { document.getElementById('sopt_' + id)?.click(); }, 700);
