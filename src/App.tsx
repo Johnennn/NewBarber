@@ -698,7 +698,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
           {/* STEP 2: PROFESIONAL */}
           {step === 2 && (
             <div className="booking-step">
-              <h3 className="step-title">Elige tu profesional</h3>
+              <h3 className="step-title">Elige tu barbero preferido</h3>
               <div className="pros-select">
                 {PROS.map(p => (
                   <button key={p.id}
