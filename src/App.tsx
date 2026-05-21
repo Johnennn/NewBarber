@@ -146,7 +146,7 @@ export default function App() {
       <nav id="nav" className={navScrolled ? 'scrolled' : ''}>
         <a href="#" className="nav-logo"
           onClick={e => { e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' }); setMobileMenuOpen(false); }}>
-          <div className="nav-logo-mark">X</div>
+          <div className="nav-logo-mark">NB</div>
           <span className="nav-logo-text">NewBarber</span>
         </a>
         <ul className="nav-links">
@@ -228,7 +228,7 @@ export default function App() {
           <div className="hero-actions">
             <a href="#booking" className="btn-primary"
               onClick={e => { e.preventDefault(); scrollToId('booking'); }}>
-              Agendar hora →
+              ¡QUIERO AGENDAR! →
             </a>
             <button className="btn-secondary" onClick={() => scrollToId('team')}>
               Ver equipo
