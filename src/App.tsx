@@ -204,7 +204,7 @@ export default function App() {
               onClick={e => {
                 e.preventDefault(); setMobileMenuOpen(false);
                 setTimeout(() => scrollToId('booking'), 50);
-              }}>Reservar hora →</a>
+              }}>Reserva tu hora aquí</a>
           </div>
         </div>
       )}
