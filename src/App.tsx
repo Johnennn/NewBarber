@@ -38,7 +38,6 @@ const APPOINTMENTS_DEFAULT = [
   { id:5, client:'Tomás Herrera',   service:'Corte Clásico',   pro:'Sebastián M.', date:'20/05/2026', time:'09:00', status:'confirmado', total:12000, email:'tomas@email.cl'   },
 ];
 
-// ── Cambia esta contraseña por la que quieras ──
 const ADMIN_PASSWORD = 'noir2026';
 
 function fmt(n: number) {
@@ -52,7 +51,6 @@ function scrollToId(id: string) {
   window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 8, behavior:'smooth' });
 }
 
-// ─── NOTIFICATION ────────────────────────────────────────────────────
 function useNotif() {
   const [msg,  setMsg]  = useState('');
   const [show, setShow] = useState(false);
@@ -65,11 +63,6 @@ function useNotif() {
   return { msg, show, notify };
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// APP
-// ═══════════════════════════════════════════════════════════════════════
-
-// Componente exclusivo para la pestaña admin — sin hooks condicionales
 function AdminTabPage() {
   const { msg, show, notify } = useNotif();
   return (
@@ -96,7 +89,7 @@ export default function App() {
   const isAuthed   = localStorage.getItem('adminAuth') === 'true';
 
   useEffect(() => {
-    if (isAdminTab) return; // no hace scroll ni observers en la pestaña admin
+    if (isAdminTab) return;
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     const onScroll = () => setNavScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
@@ -122,7 +115,6 @@ export default function App() {
     return () => { window.removeEventListener('scroll', onScroll); obs.disconnect(); };
   }, [isAdminTab]);
 
-  // Pestaña admin — todos los hooks ya fueron llamados arriba
   if (isAdminTab) {
     if (!isAuthed) {
       window.location.href = window.location.pathname;
@@ -131,11 +123,12 @@ export default function App() {
     return <AdminTabPage />;
   }
 
-  // NAVEGACIÓN SIMPLIFICADA - Sin galería
   const navLinks: [string, string][] = [
     ['team','Equipo'],
     ['booking','Reservar'],
-    ['schedule','Horarios'],  ['location','Ubicación'], ['admin','Admin'],
+    ['schedule','Horarios'],
+    ['location','Ubicación'],
+    ['admin','Admin'],
   ];
 
   return (
@@ -172,11 +165,11 @@ export default function App() {
       {mobileMenuOpen && (
         <div style={{
           position:'fixed', top:0, left:0, right:0, bottom:0, zIndex:400,
-          background:'rgba(0,0,0,0.5)', backdropFilter:'blur(4px)',
+          background:'rgba(0,0,0,0.6)', backdropFilter:'blur(4px)',
         }} onClick={() => setMobileMenuOpen(false)}>
           <div style={{
             position:'absolute', top:0, right:0, width:'280px', height:'100%',
-            background:'var(--white)', padding:'5rem 2rem 2rem',
+            background:'var(--graphite)', padding:'5rem 2rem 2rem',
             display:'flex', flexDirection:'column', gap:'0.25rem',
           }} onClick={e => e.stopPropagation()}>
             {navLinks.map(([id, label]) => (
@@ -185,8 +178,8 @@ export default function App() {
                   display:'block', padding:'0.9rem 0',
                   fontFamily:'var(--ff-mono)', fontSize:'0.7rem',
                   letterSpacing:'0.2em', textTransform:'uppercase',
-                  color:'var(--gray-4)', textDecoration:'none',
-                  borderBottom:'1px solid var(--gray-7)',
+                  color:'var(--cream)', textDecoration:'none',
+                  borderBottom:'1px solid var(--graphite-light)',
                 }}
                 onClick={e => {
                   e.preventDefault(); setMobileMenuOpen(false);
@@ -198,7 +191,7 @@ export default function App() {
                 display:'block', marginTop:'1.5rem', padding:'0.9rem 1.5rem',
                 fontFamily:'var(--ff-mono)', fontSize:'0.7rem',
                 letterSpacing:'0.2em', textTransform:'uppercase',
-                background:'var(--black)', color:'var(--white)',
+                background:'var(--wine)', color:'var(--cream)',
                 textDecoration:'none', borderRadius:'4px', textAlign:'center',
               }}
               onClick={e => {
@@ -228,7 +221,7 @@ export default function App() {
           <div className="hero-actions">
             <a href="#booking" className="btn-primary"
               onClick={e => { e.preventDefault(); scrollToId('booking'); }}>
-              ¡QUIERO AGENDAR! 
+              ¡QUIERO AGENDAR!
             </a>
             <button className="btn-secondary" onClick={() => scrollToId('team')}>
               Ver equipo
@@ -285,7 +278,6 @@ function MarqueeBar() {
   );
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════
 // TEAM
 // ═══════════════════════════════════════════════════════════════════════
@@ -333,7 +325,6 @@ function TeamSection() {
 const DAY_NAMES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-// Slots artificialmente ocupados para demostración
 const TAKEN: Record<string, string[]> = {
   '2026-05-19': ['09:00','10:00','11:00','14:00'],
   '2026-05-20': ['09:30','10:30','15:00','16:00','17:00'],
@@ -384,15 +375,12 @@ function DateTimeStep({
     ? TIME_SLOTS.filter(t => takenForDate.includes(t))
     : [];
 
-  // blanks before day 1 (week starts Monday)
   const blanks = (firstDay + 6) % 7;
 
   return (
     <div className="booking-step">
       <h3 className="step-title">Elige fecha y hora</h3>
       <div className="booking-datetime">
-
-        {/* CALENDAR */}
         <div className="cal-wrap">
           <div className="cal-header">
             <button className="cal-nav" onClick={prevMonth}>‹</button>
@@ -440,7 +428,6 @@ function DateTimeStep({
           </div>
         </div>
 
-        {/* TIME SLOTS */}
         <div className="timeslots-wrap">
           {!booking.date ? (
             <div className="timeslots-placeholder">
@@ -478,14 +465,13 @@ function DateTimeStep({
             </>
           )}
         </div>
-
       </div>
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// BOOKING - SIMPLIFICADO
+// BOOKING — auto-advance, sin botón Siguiente
 // ═══════════════════════════════════════════════════════════════════════
 type BookingState = {
   service: typeof SERVICES[0] | null;
@@ -516,13 +502,26 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
   const [fphone,    setFphone]    = useState('');
   const [confirmed, setConfirmed] = useState<ConfirmedBooking | null>(null);
 
-  const stepLabels = ['Servicio','Profesional','Fecha','Datos'];
+  const stepLabels = ['Servicio','Profesional','Fecha & Hora','Datos'];
 
-  const goStep = (n: number) => {
-    if (n === 2 && !booking.service) { notify('Selecciona un servicio primero'); return; }
-    if (n === 3 && !booking.pro)     { notify('Selecciona un profesional primero'); return; }
-    if (n === 4 && (!booking.date || !booking.time)) { notify('Selecciona fecha y hora'); return; }
-    setStep(n);
+  // Auto-advance al seleccionar servicio
+  const handleSelectService = (s: typeof SERVICES[0]) => {
+    setBooking(prev => ({ ...prev, service: s }));
+    setTimeout(() => setStep(2), 300);
+  };
+
+  // Auto-advance al seleccionar profesional
+  const handleSelectPro = (p: typeof PROS[0]) => {
+    setBooking(prev => ({ ...prev, pro: p }));
+    setTimeout(() => setStep(3), 300);
+  };
+
+  // Auto-advance al seleccionar hora (fecha + hora completos)
+  const handleSetBookingDateTime = (b: BookingState) => {
+    setBooking(b);
+    if (b.date && b.time) {
+      setTimeout(() => setStep(4), 350);
+    }
   };
 
   const confirmBooking = () => {
@@ -566,13 +565,10 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     const updated = saved.map(a => a.id === confirmed.id ? { ...a, status: 'cancelado' } : a);
     localStorage.setItem('appointments', JSON.stringify(updated));
     notify('Reserva cancelada');
-    setConfirmed(null);
-    setStep(1);
-    setBooking({ service:null, pro:null, date:null, time:null });
-    setFname(''); setFemail(''); setFphone('');
+    resetAll();
   };
 
-  const newBooking = () => {
+  const resetAll = () => {
     setConfirmed(null);
     setStep(1);
     setBooking({ service:null, pro:null, date:null, time:null });
@@ -586,7 +582,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
         <div className="booking-container">
           <div className="booking-confirmed">
             <div className="confirmed-check">✓</div>
-            <h2 className="confirmed-title">¡ Tú Reserva está confirmada!</h2>
+            <h2 className="confirmed-title">¡Tu Reserva está confirmada!</h2>
             <p className="confirmed-sub">Te esperamos, <strong>{confirmed.client}</strong>. Recibirás un recordatorio en <em>{confirmed.email}</em>.</p>
 
             <div className="confirmed-card">
@@ -594,7 +590,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
                 <span className="confirmed-card-label">Resumen de tu reserva</span>
                 <span className="confirmed-badge">Pendiente de confirmación</span>
               </div>
-
               <div className="confirmed-rows">
                 <div className="confirmed-row">
                   <span className="confirmed-row-icon">{confirmed.serviceIcon}</span>
@@ -603,7 +598,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
                     <div className="confirmed-row-value">{confirmed.service} · {confirmed.serviceDuration}</div>
                   </div>
                 </div>
-
                 <div className="confirmed-row">
                   <img src={confirmed.proImg} alt={confirmed.pro} className="confirmed-pro-img" />
                   <div>
@@ -611,7 +605,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
                     <div className="confirmed-row-value">{confirmed.pro}</div>
                   </div>
                 </div>
-
                 <div className="confirmed-row">
                   <span className="confirmed-row-icon">📅</span>
                   <div>
@@ -619,7 +612,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
                     <div className="confirmed-row-value" style={{ textTransform:'capitalize' }}>{confirmed.date}</div>
                   </div>
                 </div>
-
                 <div className="confirmed-row">
                   <span className="confirmed-row-icon">🕐</span>
                   <div>
@@ -627,9 +619,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
                     <div className="confirmed-row-value">{confirmed.time} hrs</div>
                   </div>
                 </div>
-
                 <div className="confirmed-divider" />
-
                 <div className="confirmed-row confirmed-total-row">
                   <span className="confirmed-row-icon">💳</span>
                   <div>
@@ -641,12 +631,8 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
             </div>
 
             <div className="confirmed-actions">
-              <button className="btn-next" onClick={newBooking}>
-                + Nueva reserva
-              </button>
-              <button className="confirmed-cancel-btn" onClick={cancelBooking}>
-                Cancelar esta reserva
-              </button>
+              <button className="btn-next" onClick={resetAll}>+ Nueva reserva</button>
+              <button className="confirmed-cancel-btn" onClick={cancelBooking}>Cancelar esta reserva</button>
             </div>
           </div>
         </div>
@@ -658,7 +644,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     <section id="booking">
       <div className="booking-container">
         <div className="booking-header">
-          <div className="section-label">Agenda tu turno</div>
           <h2 className="section-title">Reservar<br/><em>Hora</em></h2>
         </div>
 
@@ -666,23 +651,23 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
         <div className="booking-progress">
           {stepLabels.map((l, i) => (
             <div key={i} className={`progress-step ${i + 1 <= step ? 'active' : ''} ${i + 1 === step ? 'current' : ''}`}>
-              <div className="progress-dot">{i + 1}</div>
+              <div className="progress-dot">{i + 1 < step ? '✓' : i + 1}</div>
               <span className="progress-label">{l}</span>
             </div>
           ))}
         </div>
 
         <div className="booking-form-wrap">
-          {/* STEP 1: SERVICIO */}
+
+          {/* STEP 1: SERVICIO — auto-advance al click */}
           {step === 1 && (
             <div className="booking-step">
               <h3 className="step-title">Selecciona un servicio</h3>
               <div className="services-select">
                 {SERVICES.map(s => (
                   <button key={s.id}
-                    id={'sopt_' + s.id}
                     className={`service-option ${booking.service?.id === s.id ? 'selected' : ''}`}
-                    onClick={() => setBooking({ ...booking, service: s })}>
+                    onClick={() => handleSelectService(s)}>
                     <div className="service-option-icon">{s.icon}</div>
                     <div className="service-option-info">
                       <div className="service-option-name">{s.name}</div>
@@ -695,7 +680,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
             </div>
           )}
 
-          {/* STEP 2: PROFESIONAL */}
+          {/* STEP 2: PROFESIONAL — auto-advance al click */}
           {step === 2 && (
             <div className="booking-step">
               <h3 className="step-title">Elige tu barbero preferido</h3>
@@ -703,7 +688,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
                 {PROS.map(p => (
                   <button key={p.id}
                     className={`pro-option ${booking.pro?.id === p.id ? 'selected' : ''}`}
-                    onClick={() => setBooking({ ...booking, pro: p })}>
+                    onClick={() => handleSelectPro(p)}>
                     <img src={p.img} alt={p.name} className="pro-option-img"/>
                     <div className="pro-option-info">
                       <div className="pro-option-name">{p.name}</div>
@@ -716,41 +701,57 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
             </div>
           )}
 
-          {/* STEP 3: FECHA Y HORA */}
+          {/* STEP 3: FECHA Y HORA — auto-advance al seleccionar hora */}
           {step === 3 && (
-            <DateTimeStep booking={booking} setBooking={setBooking} />
+            <DateTimeStep booking={booking} setBooking={handleSetBookingDateTime} />
           )}
 
-          {/* STEP 4: DATOS */}
+          {/* STEP 4: DATOS + CONFIRMAR */}
           {step === 4 && (
             <div className="booking-step">
               <h3 className="step-title">Completa tus datos</h3>
+
+              {/* Resumen compacto */}
+              <div className="booking-summary">
+                <div className="booking-summary-item">
+                  <span>{booking.service?.icon}</span>
+                  <span>{booking.service?.name}</span>
+                </div>
+                <div className="booking-summary-sep">·</div>
+                <div className="booking-summary-item">
+                  <span>👤</span>
+                  <span>{booking.pro?.name}</span>
+                </div>
+                <div className="booking-summary-sep">·</div>
+                <div className="booking-summary-item">
+                  <span>📅</span>
+                  <span>
+                    {booking.date?.toLocaleDateString('es-CL', { day:'numeric', month:'short' })} a las {booking.time}
+                  </span>
+                </div>
+              </div>
+
               <div className="booking-form">
-                <input type="text" placeholder="Tu nombre" value={fname} onChange={e => setFname(e.target.value)}/>
-                <input type="email" placeholder="Tu email" value={femail} onChange={e => setFemail(e.target.value)}/>
-                <input type="tel" placeholder="Tu teléfono" value={fphone} onChange={e => setFphone(e.target.value)}/>
+                <input type="text"    placeholder="Tu nombre"    value={fname}  onChange={e => setFname(e.target.value)}/>
+                <input type="email"   placeholder="Tu email"     value={femail} onChange={e => setFemail(e.target.value)}/>
+                <input type="tel"     placeholder="Tu teléfono"  value={fphone} onChange={e => setFphone(e.target.value)}/>
+              </div>
+
+              <div className="booking-actions">
+                <button className="btn-back" onClick={() => setStep(3)}>← Atrás</button>
+                <button className="btn-confirm" onClick={confirmBooking}>
+                  ✓ Confirmar — {fmt(booking.service?.price ?? 0)}
+                </button>
               </div>
             </div>
           )}
 
-          {/* BOTONES NAVEGACIÓN */}
-          <div className="booking-actions">
-            {step > 1 && (
-              <button className="btn-back" onClick={() => setStep(step - 1)}>
-                ← Atrás
-              </button>
-            )}
-            {step < 4 && (
-              <button className="btn-next" onClick={() => goStep(step + 1)}>
-                Siguiente →
-              </button>
-            )}
-            {step === 4 && (
-              <button className="btn-confirm" onClick={confirmBooking}>
-                ✓ Confirmar Reserva
-              </button>
-            )}
-          </div>
+          {/* Botón atrás para pasos 2 y 3 */}
+          {(step === 2 || step === 3) && (
+            <div className="booking-actions">
+              <button className="btn-back" onClick={() => setStep(step - 1)}>← Atrás</button>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -812,7 +813,7 @@ function LocationSection() {
           </div>
         </div>
         <div className="location-map-placeholder">
-          <div style={{ padding:'2rem', textAlign:'center', color:'var(--gray-5)' }}>
+          <div style={{ padding:'2rem', textAlign:'center', color:'var(--graphite-mid)' }}>
             Mapa interactivo aquí
           </div>
         </div>
@@ -822,7 +823,7 @@ function LocationSection() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// ADMIN SECTION
+// ADMIN
 // ═══════════════════════════════════════════════════════════════════════
 function AdminSection() {
   return (
@@ -839,7 +840,6 @@ function AdminLogin() {
   const handleLogin = () => {
     if (pass === ADMIN_PASSWORD) {
       setError(false);
-      // Guarda sesión en localStorage y abre nueva pestaña
       localStorage.setItem('adminAuth', 'true');
       window.open(window.location.pathname + '?admin=1', '_blank');
     } else {
@@ -867,9 +867,7 @@ function AdminLogin() {
           />
           {error && <span className="admin-login-error">Contraseña incorrecta</span>}
         </div>
-        <button onClick={handleLogin}>
-          Acceder al panel →
-        </button>
+        <button onClick={handleLogin}>Acceder al panel →</button>
         <p className="admin-login-hint">Se abrirá en una nueva pestaña</p>
       </div>
     </div>
@@ -883,9 +881,7 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
   const [refreshing,   setRefreshing]   = useState(false);
   const [lastRefresh,  setLastRefresh]  = useState(new Date());
 
-  const loadAppointments = () => {
-    return JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT));
-  };
+  const loadAppointments = () => JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT));
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -897,11 +893,6 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
     }, 600);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminAuth');
-    onLogout();
-  };
-
   const filtered = appointments.filter((a:any) => a.client.toLowerCase().includes(searchFilter.toLowerCase()) || a.email.includes(searchFilter));
   const updateStatus = (id: number, status: string) => { const upd = appointments.map((a:any) => a.id === id ? { ...a, status } : a); setAppointments(upd); localStorage.setItem('appointments', JSON.stringify(upd)); };
   const deleteAppt = (id: number) => { const upd = appointments.filter((a:any) => a.id !== id); setAppointments(upd); localStorage.setItem('appointments', JSON.stringify(upd)); notify('Cita eliminada'); };
@@ -911,7 +902,6 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
   const barDays = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
   const barVals = [5, 7, 4, 6, 8, 5];
   const barMax = Math.max(...barVals);
-
   const timeStr = lastRefresh.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
   return (
@@ -925,31 +915,19 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
           </div>
         </div>
         <div style={{ display:'flex', gap:'0.75rem', alignItems:'center' }}>
-          <button onClick={handleRefresh} className={`refresh-btn ${refreshing ? 'spinning' : ''}`} title="Refrescar datos">
+          <button onClick={handleRefresh} className={`refresh-btn ${refreshing ? 'spinning' : ''}`}>
             <span className="refresh-icon">↻</span>
             {refreshing ? 'Actualizando...' : 'Refrescar'}
           </button>
-          <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
+          <button onClick={onLogout} className="logout-btn">Cerrar sesión</button>
         </div>
       </div>
 
       <div className="admin-kpis">
-        <div className="kpi">
-          <div className="kpi-value">{appointments.length}</div>
-          <div className="kpi-label">Citas Totales</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-value">{appointments.filter((a:any) => a.status === 'confirmado').length}</div>
-          <div className="kpi-label">Confirmadas</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-value">{fmt(appointments.reduce((s:number, a:any) => s + a.total, 0))}</div>
-          <div className="kpi-label">Ingresos</div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-value">{appointments.filter((a:any) => a.status === 'pendiente').length}</div>
-          <div className="kpi-label">Pendientes</div>
-        </div>
+        <div className="kpi"><div className="kpi-value">{appointments.length}</div><div className="kpi-label">Citas Totales</div></div>
+        <div className="kpi"><div className="kpi-value">{appointments.filter((a:any) => a.status === 'confirmado').length}</div><div className="kpi-label">Confirmadas</div></div>
+        <div className="kpi"><div className="kpi-value">{fmt(appointments.reduce((s:number, a:any) => s + a.total, 0))}</div><div className="kpi-label">Ingresos</div></div>
+        <div className="kpi"><div className="kpi-value">{appointments.filter((a:any) => a.status === 'pendiente').length}</div><div className="kpi-label">Pendientes</div></div>
       </div>
 
       <div className="admin-section">
@@ -957,32 +935,20 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
         <input type="text" placeholder="Buscar cliente..." value={searchFilter} onChange={e => setSearchFilter(e.target.value)} className="search-input"/>
         <table className="admin-table">
           <thead>
-            <tr>
-              {['Cliente','Servicio','Profesional','Fecha','Hora','Estado','Total','Acciones'].map(h => (
-                <th key={h}>{h}</th>
-              ))}
-            </tr>
+            <tr>{['Cliente','Servicio','Profesional','Fecha','Hora','Estado','Total','Acciones'].map(h => <th key={h}>{h}</th>)}</tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={8} style={{ textAlign:'center', padding:'3rem', color:'var(--gray-5)' }}>
-                  No hay citas que coincidan
-                </td>
-              </tr>
+              <tr><td colSpan={8} style={{ textAlign:'center', padding:'3rem', color:'var(--graphite-mid)' }}>No hay citas que coincidan</td></tr>
             ) : filtered.map((a:any) => (
               <tr key={a.id}>
-                <td>
-                  <div style={{ fontWeight:600 }}>{a.client}</div>
-                  <div style={{ fontSize:'.75rem', color:'var(--gray-5)' }}>{a.email}</div>
-                </td>
-                <td style={{ color:'var(--gray-4)' }}>{a.service}</td>
-                <td style={{ color:'var(--gray-4)' }}>{a.pro}</td>
-                <td style={{ color:'var(--gray-4)' }}>{a.date}</td>
+                <td><div style={{ fontWeight:600 }}>{a.client}</div><div style={{ fontSize:'.75rem', color:'var(--graphite-mid)' }}>{a.email}</div></td>
+                <td>{a.service}</td>
+                <td>{a.pro}</td>
+                <td>{a.date}</td>
                 <td style={{ fontFamily:'var(--ff-mono)', fontSize:'.8rem' }}>{a.time}</td>
                 <td>
-                  <select className={`status-select ${a.status}`} value={a.status}
-                    onChange={e => updateStatus(a.id, e.target.value)}>
+                  <select className={`status-select ${a.status}`} value={a.status} onChange={e => updateStatus(a.id, e.target.value)}>
                     <option value="confirmado">✓ Confirmado</option>
                     <option value="pendiente">⏳ Pendiente</option>
                     <option value="cancelado">✕ Cancelado</option>
@@ -990,7 +956,7 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
                 </td>
                 <td style={{ fontFamily:'var(--ff-display)', fontWeight:700 }}>{fmt(a.total)}</td>
                 <td>
-                  <button className="action-btn"     onClick={() => sendReminder(a.id)}>📱</button>
+                  <button className="action-btn" onClick={() => sendReminder(a.id)}>📱</button>
                   <button className="action-btn del" onClick={() => deleteAppt(a.id)}>✕</button>
                 </td>
               </tr>
@@ -1019,18 +985,12 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
           <ul className="email-list">
             {emailConfigs.map((e, i) => (
               <li className="email-item" key={e.name}>
-                <button className={`email-toggle${e.on ? ' on' : ''}`}
-                  onClick={() => toggleEmail(i)}>
+                <button className={`email-toggle${e.on ? ' on' : ''}`} onClick={() => toggleEmail(i)}>
                   <div className="email-toggle-dot"></div>
                 </button>
                 <span className="email-name">{e.name}</span>
                 <span className="email-status">{e.on ? 'ACTIVO' : 'INACTIVO'}</span>
-                {e.on && (
-                  <button className="reminder-send-btn"
-                    onClick={() => notify(`✉️ ${e.name} enviado manualmente`)}>
-                    Enviar
-                  </button>
-                )}
+                {e.on && <button className="reminder-send-btn" onClick={() => notify(`✉️ ${e.name} enviado`)}>Enviar</button>}
               </li>
             ))}
           </ul>
@@ -1051,19 +1011,15 @@ function FooterSection() {
           <div className="footer-brand">
             <div style={{ display:'inline-flex', alignItems:'center', gap:'.6rem', marginBottom:'.5rem' }}>
               <div className="nav-logo-mark">N</div>
-              <span className="nav-logo-text nav-logo-text-inv">
-                NOIR<span>&amp;</span>CO
-              </span>
+              <span className="nav-logo-text nav-logo-text-inv">NOIR<span>&amp;</span>CO</span>
             </div>
             <p>Barbería de precisión artesanal. Est. 2016, Conón, Valparaíso.</p>
           </div>
           <div>
             <div className="footer-col-title">Navegar</div>
             <ul className="footer-links">
-              {[['services','Servicios'],['team','Equipo'],['booking','Reservar']].map(([id, label]) => (
-                <li key={id}>
-                  <a href={'#' + id} onClick={e => { e.preventDefault(); scrollToId(id); }}>{label}</a>
-                </li>
+              {[['team','Equipo'],['booking','Reservar'],['schedule','Horarios']].map(([id, label]) => (
+                <li key={id}><a href={'#' + id} onClick={e => { e.preventDefault(); scrollToId(id); }}>{label}</a></li>
               ))}
             </ul>
           </div>
@@ -1087,9 +1043,7 @@ function FooterSection() {
         <div className="footer-bottom">
           <span>© 2026 Noir &amp; Co. Todos los derechos reservados.</span>
           <div className="footer-social">
-            {['ig','fb','tw'].map(s => (
-              <a key={s} href="#" className="social-link">{s}</a>
-            ))}
+            {['ig','fb','tw'].map(s => <a key={s} href="#" className="social-link">{s}</a>)}
           </div>
         </div>
       </div>
