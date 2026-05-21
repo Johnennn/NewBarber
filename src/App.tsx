@@ -10,7 +10,7 @@ const SERVICES = [
 ];
 const PROS = [
   { id:1, name:'Andrés F.',    spec:'Cortes Clásicos & Fade',  rating:'4.9', cuts:'1.240', img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'12 años de experiencia. Especialista en fades y cortes clásicos americanos.' },
-  { id:2, name:'Camila R.',    spec:'Corte + Barba Femenino',  rating:'5.0', cuts:'980',   img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'Primera maestra barbera del equipo. Especialista en diseños de barba y coloración.' },
+  { id:2, name:'Camila R.',    spec:'Corte + Barba',           rating:'5.0', cuts:'980',   img:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'Primera maestra barbera del equipo. Especialista en diseños de barba y coloración.' },
   { id:3, name:'Sebastián M.', spec:'Diseño & Textura',        rating:'4.8', cuts:'1.560', img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80&auto=format&fit=crop&crop=faces', bio:'Referente en cortes de textura y técnicas internacionales. Ex-instructor.' },
 ];
 const SCHEDULE = [
@@ -107,8 +107,8 @@ export default function App() {
     document.querySelectorAll('.team-card,.kpi,.admin-card,.schedule-day').forEach(el => {
       const h = el as HTMLElement;
       h.style.opacity = '0';
-      h.style.transform = 'translateY(20px)';
-      h.style.transition = 'opacity .5s ease, transform .5s ease';
+      h.style.transform = 'translateY(24px)';
+      h.style.transition = 'opacity .6s ease, transform .6s var(--ease-out)';
       obs.observe(h);
     });
 
@@ -140,7 +140,7 @@ export default function App() {
         <a href="#" className="nav-logo"
           onClick={e => { e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' }); setMobileMenuOpen(false); }}>
           <div className="nav-logo-mark">NB</div>
-          <span className="nav-logo-text">NewBarber</span>
+          <span className="nav-logo-text">Noir<span>&</span>Co</span>
         </a>
         <ul className="nav-links">
           {navLinks.map(([id, label]) => (
@@ -165,21 +165,30 @@ export default function App() {
       {mobileMenuOpen && (
         <div style={{
           position:'fixed', top:0, left:0, right:0, bottom:0, zIndex:400,
-          background:'rgba(0,0,0,0.6)', backdropFilter:'blur(4px)',
+          background:'rgba(8,13,26,0.85)', backdropFilter:'blur(8px)',
         }} onClick={() => setMobileMenuOpen(false)}>
           <div style={{
-            position:'absolute', top:0, right:0, width:'280px', height:'100%',
-            background:'var(--graphite)', padding:'5rem 2rem 2rem',
-            display:'flex', flexDirection:'column', gap:'0.25rem',
+            position:'absolute', top:0, right:0, width:'300px', height:'100%',
+            background:'var(--midnight-2)',
+            borderLeft:'1px solid rgba(208,213,226,0.07)',
+            padding:'5.5rem 2.5rem 2.5rem',
+            display:'flex', flexDirection:'column', gap:'0',
           }} onClick={e => e.stopPropagation()}>
+            {/* Línea decorativa superior */}
+            <div style={{
+              position:'absolute', top:0, left:'20%', right:'20%',
+              height:'1px',
+              background:'linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent)',
+            }} />
             {navLinks.map(([id, label]) => (
               <a key={id} href={'#' + id}
                 style={{
-                  display:'block', padding:'0.9rem 0',
-                  fontFamily:'var(--ff-mono)', fontSize:'0.7rem',
+                  display:'block', padding:'1rem 0',
+                  fontFamily:'var(--ff-mono)', fontSize:'0.65rem',
                   letterSpacing:'0.2em', textTransform:'uppercase',
-                  color:'var(--cream)', textDecoration:'none',
-                  borderBottom:'1px solid var(--graphite-light)',
+                  color:'var(--silver-4)', textDecoration:'none',
+                  borderBottom:'1px solid rgba(208,213,226,0.06)',
+                  transition:'color 0.2s',
                 }}
                 onClick={e => {
                   e.preventDefault(); setMobileMenuOpen(false);
@@ -188,16 +197,18 @@ export default function App() {
             ))}
             <a href="#booking"
               style={{
-                display:'block', marginTop:'1.5rem', padding:'0.9rem 1.5rem',
-                fontFamily:'var(--ff-mono)', fontSize:'0.7rem',
+                display:'block', marginTop:'2rem', padding:'1rem 1.5rem',
+                fontFamily:'var(--ff-mono)', fontSize:'0.62rem',
                 letterSpacing:'0.2em', textTransform:'uppercase',
-                background:'var(--wine)', color:'var(--cream)',
-                textDecoration:'none', borderRadius:'4px', textAlign:'center',
+                border:'1px solid rgba(201,168,76,0.4)',
+                color:'var(--gold)',
+                textDecoration:'none', textAlign:'center',
+                transition:'all 0.3s',
               }}
               onClick={e => {
                 e.preventDefault(); setMobileMenuOpen(false);
                 setTimeout(() => scrollToId('booking'), 50);
-              }}>Reserva tu hora aquí</a>
+              }}>Reserva tu hora</a>
           </div>
         </div>
       )}
@@ -211,7 +222,7 @@ export default function App() {
           </div>
           <h1 className="hero-title">
             Barbería<br/>
-            <em> de precisión</em><br/>
+            <em>de precisión</em><br/>
             artesanal.
           </h1>
           <p className="hero-desc">
@@ -221,10 +232,10 @@ export default function App() {
           <div className="hero-actions">
             <a href="#booking" className="btn-primary"
               onClick={e => { e.preventDefault(); scrollToId('booking'); }}>
-              ¡QUIERO AGENDAR!
+              Agendar hora
             </a>
             <button className="btn-secondary" onClick={() => scrollToId('team')}>
-              Ver equipo
+              Conocer el equipo
             </button>
           </div>
           <div className="hero-stats">
@@ -471,7 +482,7 @@ function DateTimeStep({
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// BOOKING — auto-advance, sin botón Siguiente
+// BOOKING
 // ═══════════════════════════════════════════════════════════════════════
 type BookingState = {
   service: typeof SERVICES[0] | null;
@@ -504,19 +515,16 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
 
   const stepLabels = ['Servicio','Profesional','Fecha & Hora','Datos'];
 
-  // Auto-advance al seleccionar servicio
   const handleSelectService = (s: typeof SERVICES[0]) => {
     setBooking(prev => ({ ...prev, service: s }));
     setTimeout(() => setStep(2), 300);
   };
 
-  // Auto-advance al seleccionar profesional
   const handleSelectPro = (p: typeof PROS[0]) => {
     setBooking(prev => ({ ...prev, pro: p }));
     setTimeout(() => setStep(3), 300);
   };
 
-  // Auto-advance al seleccionar hora (fecha + hora completos)
   const handleSetBookingDateTime = (b: BookingState) => {
     setBooking(b);
     if (b.date && b.time) {
@@ -575,14 +583,13 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     setFname(''); setFemail(''); setFphone('');
   };
 
-  // ── Pantalla de confirmación ──
   if (confirmed) {
     return (
       <section id="booking">
         <div className="booking-container">
           <div className="booking-confirmed">
-            <div className="confirmed-check">✓</div>
-            <h2 className="confirmed-title">¡Tu Reserva está confirmada!</h2>
+            <div className="confirmed-check">✦</div>
+            <h2 className="confirmed-title">Reserva Confirmada</h2>
             <p className="confirmed-sub">Te esperamos, <strong>{confirmed.client}</strong>. Recibirás un recordatorio en <em>{confirmed.email}</em>.</p>
 
             <div className="confirmed-card">
@@ -644,10 +651,10 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     <section id="booking">
       <div className="booking-container">
         <div className="booking-header">
+          <div className="section-label">Agenda tu visita</div>
           <h2 className="section-title">Reservar<br/><em>Hora</em></h2>
         </div>
 
-        {/* PROGRESS */}
         <div className="booking-progress">
           {stepLabels.map((l, i) => (
             <div key={i} className={`progress-step ${i + 1 <= step ? 'active' : ''} ${i + 1 === step ? 'current' : ''}`}>
@@ -659,7 +666,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
 
         <div className="booking-form-wrap">
 
-          {/* STEP 1: SERVICIO — auto-advance al click */}
           {step === 1 && (
             <div className="booking-step">
               <h3 className="step-title">Selecciona un servicio</h3>
@@ -680,7 +686,6 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
             </div>
           )}
 
-          {/* STEP 2: PROFESIONAL — auto-advance al click */}
           {step === 2 && (
             <div className="booking-step">
               <h3 className="step-title">Elige tu barbero preferido</h3>
@@ -701,17 +706,14 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
             </div>
           )}
 
-          {/* STEP 3: FECHA Y HORA — auto-advance al seleccionar hora */}
           {step === 3 && (
             <DateTimeStep booking={booking} setBooking={handleSetBookingDateTime} />
           )}
 
-          {/* STEP 4: DATOS + CONFIRMAR */}
           {step === 4 && (
             <div className="booking-step">
               <h3 className="step-title">Completa tus datos</h3>
 
-              {/* Resumen compacto */}
               <div className="booking-summary">
                 <div className="booking-summary-item">
                   <span>{booking.service?.icon}</span>
@@ -740,13 +742,12 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
               <div className="booking-actions">
                 <button className="btn-back" onClick={() => setStep(3)}>← Atrás</button>
                 <button className="btn-confirm" onClick={confirmBooking}>
-                  ✓ Confirmar — {fmt(booking.service?.price ?? 0)}
+                  Confirmar — {fmt(booking.service?.price ?? 0)}
                 </button>
               </div>
             </div>
           )}
 
-          {/* Botón atrás para pasos 2 y 3 */}
           {(step === 2 || step === 3) && (
             <div className="booking-actions">
               <button className="btn-back" onClick={() => setStep(step - 1)}>← Atrás</button>
@@ -786,7 +787,7 @@ function LocationSection() {
     <section id="location" style={{ padding:0, margin:0 }}>
       <div className="location-grid">
         <div className="location-info">
-          <div className="section-label">Encuentranos</div>
+          <div className="section-label">Encuéntranos</div>
           <h2 className="section-title">Ubicación</h2>
           <div className="location-details">
             <div className="location-item">
@@ -813,8 +814,8 @@ function LocationSection() {
           </div>
         </div>
         <div className="location-map-placeholder">
-          <div style={{ padding:'2rem', textAlign:'center', color:'var(--graphite-mid)' }}>
-            Mapa interactivo aquí
+          <div style={{ padding:'2rem', textAlign:'center', color:'var(--silver-6)', fontFamily:'var(--ff-mono)', fontSize:'0.6rem', letterSpacing:'0.2em', textTransform:'uppercase' }}>
+            Mapa interactivo
           </div>
         </div>
       </div>
@@ -852,9 +853,9 @@ function AdminLogin() {
     <div className="admin-login">
       <div className="admin-login-wrap">
         <div className="admin-login-logo">
-          <div className="nav-logo-mark" style={{ width:48, height:48, fontSize:'1.2rem' }}>N</div>
+          <div className="nav-logo-mark" style={{ width:52, height:52, fontSize:'1.3rem' }}>N</div>
         </div>
-        <h2>NOIR &amp; CO</h2>
+        <h2>Noir &amp; Co</h2>
         <p className="admin-login-sub">Panel de Administración</p>
         <div className="admin-login-field">
           <input
@@ -939,10 +940,10 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={8} style={{ textAlign:'center', padding:'3rem', color:'var(--graphite-mid)' }}>No hay citas que coincidan</td></tr>
+              <tr><td colSpan={8} style={{ textAlign:'center', padding:'3rem', color:'var(--silver-6)' }}>No hay citas que coincidan</td></tr>
             ) : filtered.map((a:any) => (
               <tr key={a.id}>
-                <td><div style={{ fontWeight:600 }}>{a.client}</div><div style={{ fontSize:'.75rem', color:'var(--graphite-mid)' }}>{a.email}</div></td>
+                <td><div style={{ fontWeight:500, color:'var(--silver-2)' }}>{a.client}</div><div style={{ fontSize:'.75rem', color:'var(--silver-6)' }}>{a.email}</div></td>
                 <td>{a.service}</td>
                 <td>{a.pro}</td>
                 <td>{a.date}</td>
@@ -954,7 +955,7 @@ function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()
                     <option value="cancelado">✕ Cancelado</option>
                   </select>
                 </td>
-                <td style={{ fontFamily:'var(--ff-display)', fontWeight:700 }}>{fmt(a.total)}</td>
+                <td style={{ fontFamily:'var(--ff-display)', fontWeight:400, color:'var(--gold)' }}>{fmt(a.total)}</td>
                 <td>
                   <button className="action-btn" onClick={() => sendReminder(a.id)}>📱</button>
                   <button className="action-btn del" onClick={() => deleteAppt(a.id)}>✕</button>
@@ -1009,9 +1010,9 @@ function FooterSection() {
       <div className="footer-inner">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div style={{ display:'inline-flex', alignItems:'center', gap:'.6rem', marginBottom:'.5rem' }}>
+            <div style={{ display:'inline-flex', alignItems:'center', gap:'.75rem', marginBottom:'.5rem' }}>
               <div className="nav-logo-mark">N</div>
-              <span className="nav-logo-text nav-logo-text-inv">NOIR<span>&amp;</span>CO</span>
+              <span className="nav-logo-text nav-logo-text-inv">Noir<span>&amp;</span>Co</span>
             </div>
             <p>Barbería de precisión artesanal. Est. 2016, Conón, Valparaíso.</p>
           </div>
