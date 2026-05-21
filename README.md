@@ -72,4 +72,8 @@ src/
  ├── pages/
  ├── styles/
  ├── App.tsx
+<<<<<<< HEAD
  └── main.tsx
+=======
+ └── main.tsx
+>>>>>>> e2345e661a8cf8ca1ab8e1be1a169d59b950349e
