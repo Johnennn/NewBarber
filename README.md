@@ -48,9 +48,7 @@ Plataforma web moderna para barbería desarrollada con tecnologías actuales, en
 ## 📸 Vista previa
 
 <p align="center">
-
-<img src="https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif" width="250"/>
-
+  <img src="./src/assets/preview.png" width="1000"/>
 </p>
 
 ---
