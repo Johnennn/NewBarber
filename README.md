@@ -1,4 +1,4 @@
-# 💈 Barbería Johnen
+# 💈 Barbería NEW BARBER
 
 <p align="center">
   <img src="https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif" width="250"/>
