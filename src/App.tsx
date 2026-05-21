@@ -139,8 +139,8 @@ export default function App() {
       <nav id="nav" className={navScrolled ? 'scrolled' : ''}>
         <a href="#" className="nav-logo"
           onClick={e => { e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' }); setMobileMenuOpen(false); }}>
-          <div className="nav-logo-mark">NB</div>
-          <span className="nav-logo-text">Noir<span>&</span>Co</span>
+          <div className="nav-logo-mark">NBS</div>
+          <span className="nav-logo-text">New<span> Barber Studio</span></span>
         </a>
         <ul className="nav-links">
           {navLinks.map(([id, label]) => (
@@ -247,7 +247,6 @@ export default function App() {
             ))}
           </div>
           <div className="hero-scroll">
-            <span>Scroll</span>
             <div className="hero-scroll-line"></div>
           </div>
         </div>
@@ -651,8 +650,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
     <section id="booking">
       <div className="booking-container">
         <div className="booking-header">
-          <div className="section-label">Agenda tu visita</div>
-          <h2 className="section-title">Reservar<br/><em>Hora</em></h2>
+          <h2 className="section-title">Agenda tu<br/><em>Visita</em></h2>
         </div>
 
         <div className="booking-progress">
@@ -853,9 +851,9 @@ function AdminLogin() {
     <div className="admin-login">
       <div className="admin-login-wrap">
         <div className="admin-login-logo">
-          <div className="nav-logo-mark" style={{ width:52, height:52, fontSize:'1.3rem' }}>N</div>
+          <div className="nav-logo-mark" style={{ width:52, height:52, fontSize:'1.3rem' }}>NBS</div>
         </div>
-        <h2>Noir &amp; Co</h2>
+        <h2>New Barber Studio</h2>
         <p className="admin-login-sub">Panel de Administración</p>
         <div className="admin-login-field">
           <input
@@ -869,7 +867,6 @@ function AdminLogin() {
           {error && <span className="admin-login-error">Contraseña incorrecta</span>}
         </div>
         <button onClick={handleLogin}>Acceder al panel →</button>
-        <p className="admin-login-hint">Se abrirá en una nueva pestaña</p>
       </div>
     </div>
   );
