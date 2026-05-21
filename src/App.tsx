@@ -228,7 +228,7 @@ export default function App() {
           <div className="hero-actions">
             <a href="#booking" className="btn-primary"
               onClick={e => { e.preventDefault(); scrollToId('booking'); }}>
-              ¡QUIERO AGENDAR! →
+              ¡QUIERO AGENDAR! 
             </a>
             <button className="btn-secondary" onClick={() => scrollToId('team')}>
               Ver equipo
