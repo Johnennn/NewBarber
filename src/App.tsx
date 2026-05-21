@@ -147,7 +147,7 @@ export default function App() {
         <a href="#" className="nav-logo"
           onClick={e => { e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' }); setMobileMenuOpen(false); }}>
           <div className="nav-logo-mark">X</div>
-          <span className="nav-logo-text">NewBarber<span>&amp;</span>CO</span>
+          <span className="nav-logo-text">NewBarber</span>
         </a>
         <ul className="nav-links">
           {navLinks.map(([id, label]) => (
