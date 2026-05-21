@@ -293,7 +293,7 @@ function TeamSection() {
   return (
     <section id="team">
       <div className="section-label">Nuestro equipo</div>
-      <h2 className="section-title">Los<br/><em>Maestros</em></h2>
+      <h2 className="section-title">Los<br/><em>Barberos</em></h2>
       <div className="team-grid">
         {PROS.map(p => (
           <div className="team-card" key={p.id}>
@@ -586,7 +586,7 @@ function BookingSection({ notify }: { notify:(m:string)=>void }) {
         <div className="booking-container">
           <div className="booking-confirmed">
             <div className="confirmed-check">✓</div>
-            <h2 className="confirmed-title">¡Reserva confirmada!</h2>
+            <h2 className="confirmed-title">¡ Tú Reserva está confirmada!</h2>
             <p className="confirmed-sub">Te esperamos, <strong>{confirmed.client}</strong>. Recibirás un recordatorio en <em>{confirmed.email}</em>.</p>
 
             <div className="confirmed-card">
