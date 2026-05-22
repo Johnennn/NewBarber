@@ -1,6 +1,6 @@
 <p align="center">
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=30&pause=1000&color=FFFFFF&center=true&vCenter=true&width=900&lines=💈+Barbería+NewBarber;Sitio+Web+Moderno+y+Elegante;React+%2B+Vite+%2B+TailwindCSS;Animaciones+Fluidas+%7C+Responsive+Design" />
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=30&pause=1000&color=FFFFFF&center=true&vCenter=true&width=900&lines=💈+Barbería+New+Barber+Studio;Sitio+Web+Moderno+y+Elegante;React+%2B+Vite+%2B+TailwindCSS;Animaciones+Fluidas+%7C+Responsive+Design" />
 
 </p>
 
