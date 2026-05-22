@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/🚀%20VER%20SITIO%20ONLINE-black?style=for-the-badge" />
 </a>
 
-<a href="https://github.com/johnennn/informe_johnic](https://github.com/Johnennn" target="_blank">
+<a href="https://github.com/Johnennn" target="_blank">
   <img src="https://img.shields.io/badge/GitHub-Repositorio-181717?style=for-the-badge&logo=github" />
 </a>
 
