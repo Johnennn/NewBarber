@@ -48,7 +48,7 @@ function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
   const navH = (document.getElementById('nav')?.offsetHeight ?? 64);
-  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 8, behavior:'smooth' });
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH + 290, behavior:'smooth' });
 }
 
 function useNotif() {
