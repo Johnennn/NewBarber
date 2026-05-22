@@ -20,7 +20,7 @@
 
 ---
 
-# 💈 Barbería NEW BARBER
+# 💈 Barbería NEW BARBER STUDIO
 
 Plataforma web moderna para barbería desarrollada con tecnologías actuales, enfocada en diseño elegante, experiencia de usuario fluida y alto rendimiento.
 
