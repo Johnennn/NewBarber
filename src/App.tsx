@@ -807,14 +807,14 @@ function LocationSection() {
               <span className="location-icon">☎️</span>
               <div>
                 <div className="location-label">Teléfono</div>
-                <div className="location-value">+56 2 1234 5678</div>
+                <div className="location-value">+56 9 3545 5639</div>
               </div>
             </div>
             <div className="location-item">
               <span className="location-icon">✉️</span>
               <div>
                 <div className="location-label">Email</div>
-                <div className="location-value">hola@noirbarberia.cl</div>
+                <div className="location-value">NewBarber@gmail.com</div>
               </div>
             </div>
           </div>
