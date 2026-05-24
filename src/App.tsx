@@ -84,6 +84,7 @@ export default function App() {
   const { msg, show, notify } = useNotif();
   const [navScrolled,    setNavScrolled]    = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [adminModal,     setAdminModal]     = useState(false);
 
   const isAdminTab = new URLSearchParams(window.location.search).get('admin') === '1';
   const isAuthed   = localStorage.getItem('adminAuth') === 'true';
@@ -149,7 +150,7 @@ export default function App() {
           ))}
           <li>
             <a href="#admin" className="nav-plain"
-              onClick={e => { e.preventDefault(); scrollToId('admin'); }}>
+              onClick={e => { e.preventDefault(); setAdminModal(true); }}>
               Admin
             </a>
           </li>
@@ -268,8 +269,11 @@ export default function App() {
       <BookingSection notify={notify} />
       <ScheduleSection />
       <LocationSection />
-      <AdminSection />
       <FooterSection />
+
+      {adminModal && (
+        <AdminModal onClose={() => setAdminModal(false)} />
+      )}
     </>
   );
 }
@@ -829,6 +833,58 @@ function LocationSection() {
 // ═══════════════════════════════════════════════════════════════════════
 // ADMIN
 // ═══════════════════════════════════════════════════════════════════════
+function AdminModal({ onClose }: { onClose: () => void }) {
+  const [pass, setPass] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleLogin = () => {
+    if (pass === ADMIN_PASSWORD) {
+      localStorage.setItem('adminAuth', 'true');
+      window.open(window.location.pathname + '?admin=1', '_blank');
+      onClose();
+    } else {
+      setError(true);
+      setPass('');
+    }
+  };
+
+  return (
+    <div
+      style={{
+        position:'fixed', inset:0, zIndex:900,
+        background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)',
+        display:'flex', alignItems:'center', justifyContent:'center',
+      }}
+      onClick={onClose}
+    >
+      <div
+        className="admin-login-wrap"
+        style={{ margin:'1rem' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="admin-login-logo">
+          <div className="nav-logo-mark" style={{ width:52, height:52, fontSize:'1.3rem' }}>NBS</div>
+        </div>
+        <h2>New Barber Studio</h2>
+        <p className="admin-login-sub">Panel de Administración</p>
+        <div className="admin-login-field">
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={pass}
+            autoFocus
+            onChange={e => { setPass(e.target.value); setError(false); }}
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            className={error ? 'error' : ''}
+          />
+          {error && <span className="admin-login-error">Contraseña incorrecta</span>}
+        </div>
+        <button onClick={handleLogin}>Acceder al panel →</button>
+      </div>
+    </div>
+  );
+}
+
 function AdminSection() {
   return (
     <section id="admin" style={{ padding:0, maxWidth:'none', margin:0, width:'100%' }}>
