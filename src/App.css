@@ -148,32 +148,19 @@ nav.scrolled {
   font-size: 0.65rem !important;
   letter-spacing: 0.2em !important;
   font-weight: 600 !important;
-  transition: all 0.3s var(--ease-smooth) !important;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
 }
 
-.nav-cta::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--dark-1);
-  transform: translateX(-100%);
-  transition: transform 0.3s var(--ease-smooth);
-  z-index: -1;
-}
+.nav-cta::before { display: none !important; }
+.nav-cta::after  { display: none !important; }
 
-.nav-cta:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+.nav-plain {
+  background: transparent !important;
+  color: var(--gray-5) !important;
+  border: none !important;
+  padding: 0.4rem 0 !important;
+  overflow: visible !important;
 }
-
-.nav-cta:hover::before {
-  transform: translateX(0);
-}
-
-.nav-cta::after { display: none !important; }
 
 .nav-hamburger {
   display: none;
