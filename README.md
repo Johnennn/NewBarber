@@ -1,6 +1,6 @@
 <p align="center">
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=30&pause=1000&color=FFFFFF&center=true&vCenter=true&width=900&lines=💈+Barbería+Johnen;Sitio+Web+Moderno+y+Elegante;React+%2B+Vite+%2B+TailwindCSS;Animaciones+Fluidas+%7C+Responsive+Design" />
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=30&pause=1000&color=FFFFFF&center=true&vCenter=true&width=900&lines=💈+Barbería+New+Barber+Studio;Sitio+Web+Moderno+y+Elegante;React+%2B+Vite+%2B+TailwindCSS;Animaciones+Fluidas+%7C+Responsive+Design" />
 
 </p>
 
@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/🚀%20VER%20SITIO%20ONLINE-black?style=for-the-badge" />
 </a>
 
-<a href="https://github.com/TUUSUARIO/informe_johnic" target="_blank">
+<a href="https://github.com/Johnennn" target="_blank">
   <img src="https://img.shields.io/badge/GitHub-Repositorio-181717?style=for-the-badge&logo=github" />
 </a>
 
@@ -20,7 +20,7 @@
 
 ---
 
-# 💈 Barbería NEW BARBER
+# 💈 Barbería NEW BARBER STUDIO
 
 Plataforma web moderna para barbería desarrollada con tecnologías actuales, enfocada en diseño elegante, experiencia de usuario fluida y alto rendimiento.
 
