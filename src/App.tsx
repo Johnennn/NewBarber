@@ -126,7 +126,6 @@ export default function App() {
 
   const navLinks: [string, string][] = [
     ['team','Equipo'],
-    ['booking','Reservar'],
     ['schedule','Horarios'],
     ['location','Ubicación'],
   ];
