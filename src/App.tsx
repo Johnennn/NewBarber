@@ -128,7 +128,6 @@ export default function App() {
     ['booking','Reservar'],
     ['schedule','Horarios'],
     ['location','Ubicación'],
-    ['admin','Admin'],
   ];
 
   return (
@@ -148,6 +147,12 @@ export default function App() {
               <a href={'#' + id} onClick={e => { e.preventDefault(); scrollToId(id); }}>{label}</a>
             </li>
           ))}
+          <li>
+            <a href="#admin" className="nav-admin-link"
+              onClick={e => { e.preventDefault(); scrollToId('admin'); }}>
+              Admin
+            </a>
+          </li>
           <li>
             <a href="#booking" className="nav-cta"
               onClick={e => { e.preventDefault(); scrollToId('booking'); }}>
