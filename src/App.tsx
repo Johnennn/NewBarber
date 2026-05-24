@@ -1021,8 +1021,8 @@ function FooterSection() {
         <div className="footer-grid">
           <div className="footer-brand">
             <div style={{ display:'inline-flex', alignItems:'center', gap:'.75rem', marginBottom:'.5rem' }}>
-              <div className="nav-logo-mark">N</div>
-              <span className="nav-logo-text nav-logo-text-inv">Noir<span>&amp;</span>Co</span>
+              <div className="nav-logo-mark">NBS </div>
+              <span className="nav-logo-text nav-logo-text-inv"> New <span></span>Barber Studio</span>
             </div>
             <p>Barbería de precisión artesanal. Est. 2016, Conón, Valparaíso.</p>
           </div>
@@ -1045,16 +1045,18 @@ function FooterSection() {
           <div>
             <div className="footer-col-title">Contacto</div>
             <ul className="footer-links">
-              <li><a href="#">+56 2 1234 5678</a></li>
-              <li><a href="#">hola@noirbarberia.cl</a></li>
+              <li><a href="#">+56 9 3545 5639</a></li>
+              <li><a href="#">newbarber@gmail.com</a></li>
               <li><a href="#">Av. Valparaíso 1234</a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 Noir &amp; Co. Todos los derechos reservados.</span>
+          <span style={{ fontSize: '.875rem', color: '#ff0000' }}>
+            © 2026 Desarrollado por Nicolás Johnen.   <br></br> github: https://github.com/Johnennn 
+          </span>
           <div className="footer-social">
-            {['ig','fb','tw'].map(s => <a key={s} href="#" className="social-link">{s}</a>)}
+            {['ig','fb','tw'].map(s => <a key={s} href="https://www.instagram.com/njohnennn?igsh=YWh0cHA0eXdvdDZ6" className="social-link">{s}</a>)}
           </div>
         </div>
       </div>
