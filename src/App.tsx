@@ -148,7 +148,7 @@ export default function App() {
             </li>
           ))}
           <li>
-            <a href="#admin" className="nav-admin-link"
+            <a href="#admin"
               onClick={e => { e.preventDefault(); scrollToId('admin'); }}>
               Admin
             </a>

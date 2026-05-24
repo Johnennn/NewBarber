@@ -175,26 +175,6 @@ nav.scrolled {
 
 .nav-cta::after { display: none !important; }
 
-.nav-admin-link {
-  color: var(--gray-5) !important;
-  border: 1px solid var(--gray-7) !important;
-  padding: 0.4rem 1rem !important;
-  font-size: 0.65rem !important;
-  letter-spacing: 0.2em !important;
-  text-transform: uppercase !important;
-  font-weight: 600 !important;
-  transition: all 0.3s var(--ease-smooth) !important;
-  cursor: pointer !important;
-}
-
-.nav-admin-link:hover {
-  color: var(--black) !important;
-  border-color: var(--black) !important;
-  background: transparent !important;
-}
-
-.nav-admin-link::after { display: none !important; }
-
 .nav-hamburger {
   display: none;
   background: none;
