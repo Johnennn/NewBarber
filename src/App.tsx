@@ -885,53 +885,6 @@ function AdminModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-function AdminSection() {
-  return (
-    <section id="admin" style={{ padding:0, maxWidth:'none', margin:0, width:'100%' }}>
-      <AdminLogin />
-    </section>
-  );
-}
-
-function AdminLogin() {
-  const [pass, setPass] = useState('');
-  const [error, setError] = useState(false);
-
-  const handleLogin = () => {
-    if (pass === ADMIN_PASSWORD) {
-      setError(false);
-      localStorage.setItem('adminAuth', 'true');
-      window.open(window.location.pathname + '?admin=1', '_blank');
-    } else {
-      setError(true);
-      setPass('');
-    }
-  };
-
-  return (
-    <div className="admin-login">
-      <div className="admin-login-wrap">
-        <div className="admin-login-logo">
-          <div className="nav-logo-mark" style={{ width:52, height:52, fontSize:'1.3rem' }}>NBS</div>
-        </div>
-        <h2>New Barber Studio</h2>
-        <p className="admin-login-sub">Panel de Administración</p>
-        <div className="admin-login-field">
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={pass}
-            onChange={e => { setPass(e.target.value); setError(false); }}
-            onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            className={error ? 'error' : ''}
-          />
-          {error && <span className="admin-login-error">Contraseña incorrecta</span>}
-        </div>
-        <button onClick={handleLogin}>Acceder al panel →</button>
-      </div>
-    </div>
-  );
-}
 
 function AdminPanel({ notify, onLogout }: { notify:(m:string)=>void, onLogout:()=>void }) {
   const [appointments, setAppointments] = useState(JSON.parse(localStorage.getItem('appointments') ?? JSON.stringify(APPOINTMENTS_DEFAULT)));
