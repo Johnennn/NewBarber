@@ -869,7 +869,7 @@ function AdminModal({ onClose }: { onClose: () => void }) {
         <div className="admin-login-field">
           <input
             type="password"
-            placeholder="Contraseña"
+            placeholder="la contraseña es noir2026"
             value={pass}
             autoFocus
             onChange={e => { setPass(e.target.value); setError(false); }}
