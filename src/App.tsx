@@ -232,7 +232,7 @@ export default function App() {
           </h1>
           <p className="hero-desc">
             Donde cada corte es una obra de técnica y cada visita, una experiencia irrepetible.
-            Conón, Valparaíso.
+            Concón, Valparaíso.
           </p>
           <div className="hero-actions">
             <a href="#booking" className="btn-primary"
@@ -281,7 +281,7 @@ export default function App() {
 // MARQUEE
 // ═══════════════════════════════════════════════════════════════════════
 function MarqueeBar() {
-  const items = ['Cortes Clásicos','·','Diseño de Barba','·','Fade Perfecto','·','Afeitado Navaja','·','Barbería Premium','·','Est. 2016','·','Conón','·'];
+  const items = ['Cortes Clásicos','·','Diseño de Barba','·','Fade Perfecto','·','Afeitado Navaja','·','Barbería Premium','·','Est. 2016','·','Concón','·'];
   const all = [...items, ...items, ...items, ...items];
   return (
     <div className="marquee-wrapper">
@@ -800,7 +800,7 @@ function LocationSection() {
               <span className="location-icon">📍</span>
               <div>
                 <div className="location-label">Dirección</div>
-                <div className="location-value">Av. Valparaíso 1234, Conón, Valparaíso</div>
+                <div className="location-value">Av. Valparaíso 1234, Concón, Valparaíso</div>
               </div>
             </div>
             <div className="location-item">
@@ -1024,7 +1024,7 @@ function FooterSection() {
               <div className="nav-logo-mark">NBS </div>
               <span className="nav-logo-text nav-logo-text-inv"> New <span></span>Barber Studio</span>
             </div>
-            <p>Barbería de precisión artesanal. Est. 2016, Conón, Valparaíso.</p>
+            <p>Barbería de precisión artesanal. Est. 2016, Concón, Valparaíso.</p>
           </div>
           <div>
             <div className="footer-col-title">Navegar</div>
